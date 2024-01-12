@@ -22,13 +22,13 @@ root.setThemes([
   myTheme
 ]);
 
-
+let parsedData
 am5.net.load("/data/energia_baja_carbono.csv")
 .then((data) => {
     // This gets executed when data finishes loading
     // ... do something
     console.log(data.response);
-    const parsedData = am5.CSVParser.parse(data.response, {
+    parsedData = am5.CSVParser.parse(data.response, {
         delimiter: ";",
         reverse: true,
         skipEmpty: true,

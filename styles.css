@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Chivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body {
-    max-width: 800px;
+    max-width: 740px;
     margin: auto;
     background-color: #EFEFEF;
+}
+
+.logo-img{
+    width: 60px;
+    margin: 10px 30px;
 }
 
 .chart-container{
@@ -17,6 +22,14 @@ body {
     font-size:22px;
     font-family: "Chivo Mono";
     font-weight: 400;
+    margin-top: 0;
+}
+
+.intro-container{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 40px;
 }
 
 .chart-bajada{
@@ -89,7 +102,19 @@ body {
         flex-direction: column-reverse;
     }
 
+    .country-selector-container{
+        margin-top: 20px;
+    }
+
     .buttons-container{
         margin-right: 0px;
+    }
+
+    .logo-img{
+        margin: 20px 0;
+    }
+
+    .intro-container{
+        flex-direction: column;
     }
 }
