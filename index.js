@@ -1,147 +1,138 @@
+//Para hacer carrera animada: https://www.amcharts.com/demos/bar-chart-race/
+//https://stackoverflow.com/questions/72941086/amcharts-5-bar-chart-race-valueaxis-reset-on-chart-replay
+
 /* Chart code */
 // Create root element
 // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-let root = am5.Root.new("chartdiv");
+let root = am5.Root.new("chart-cont");
 
 const myTheme = am5.Theme.new(root);
 
 // Move minor label a bit down
 myTheme.rule("AxisLabel", ["minor"]).setAll({
-  dy: 1
+  dy: 1,
 });
 
 // Tweak minor grid opacity
-myTheme.rule("Grid", ["minor"]).setAll({
-  strokeOpacity: 0.08
-});
+// myTheme.rule("Grid", ["minor"]).setAll({
+//   strokeOpacity: 0.08,
+// });
 
 // Set themes
 // https://www.amcharts.com/docs/v5/concepts/themes/
-root.setThemes([
-  am5themes_Animated.new(root),
-  myTheme
-]);
+// root.setThemes([
+//   am5themes_Animated.new(root),
+//   myTheme
+// ]);
 
-let parsedData
-am5.net.load("/data/energia_baja_carbono.csv")
-.then((data) => {
-    // This gets executed when data finishes loading
-    // ... do something
+let parsedData;
+
+
+    // Process data
+    let processor = am5.DataProcessor.new(root, {
+      dateFields: ["anio"],
+      dateFormat: "yyyy",
+      numericFields: ["valor_en_porcentaje"],
+    });
+
+
+am5.net
+  .load("/data/energia_baja_carbono.csv")
+  .then((data) => {
     console.log(data.response);
     parsedData = am5.CSVParser.parse(data.response, {
-        delimiter: ";",
-        reverse: true,
-        skipEmpty: true,
-        useColumnNames: true
-      })
-    // series.data.setAll(parsedData);
-  }).catch((result) => {
-    // This gets executed if there was an error loading URL
-    // ... handle error
+      delimiter: ";",
+      reverse: true,
+      skipEmpty: true,
+      useColumnNames: true,
+      process: (row) => {
+        // Convert timestamp to a Date object
+        row.anio = new Date(parseInt(row.anio));
+
+        return row;
+      },
+    });
+    console.log(parsedData);
+
+    processor.processMany(parsedData);
+
+
+    series.data.setAll(parsedData);
+  })
+  .catch((result) => {
     console.log("Error loading " + result.xhr.responseURL);
   });
 
 // Create chart
 // https://www.amcharts.com/docs/v5/charts/xy-chart/
-let chart = root.container.children.push(am5xy.XYChart.new(root, {
-  panX: false,
-  panY: false,
-  wheelX: "panX",
-  wheelY: "zoomX",
-  paddingLeft: 0
-}));
-
+let chart = root.container.children.push(
+  am5xy.XYChart.new(root, {
+    panX: false,
+    panY: false,
+    // wheelX: "panX",
+    // wheelY: "zoomX",
+    paddingLeft: 0,
+  })
+);
 
 // Add cursor
 // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-let cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-  behavior: "zoomX"
-}));
+let cursor = chart.set(
+  "cursor",
+  am5xy.XYCursor.new(root, {
+    behavior: "zoomX",
+  })
+);
+
 cursor.lineY.set("visible", false);
-
-let date = new Date();
-date.setHours(0, 0, 0, 0);
-let value = 100;
-
-function generateData() {
-  value = Math.round((Math.random() * 10 - 5) + value);
-  am5.time.add(date, "day", 1);
-  return {
-    date: date.getTime(),
-    value: value
-  };
-}
-
-function generateDatas(count) {
-  let data = [];
-  for (var i = 0; i < count; ++i) {
-    data.push(generateData());
-  }
-  return data;
-}
-
 
 // Create axes
 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-let xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
-  maxDeviation: 0,
-  baseInterval: {
-    timeUnit: "day",
-    count: 1
-  },
-  renderer: am5xy.AxisRendererX.new(root, {
-    minorGridEnabled: true,
-    minGridDistance: 200,    
-    minorLabelsEnabled: true
-  }),
-  tooltip: am5.Tooltip.new(root, {})
-}));
+let xAxis = chart.xAxes.push(
+  am5xy.DateAxis.new(root, {
+    maxDeviation: 0,
+    baseInterval: {
+      timeUnit: "year",
+      count: 10,
+    },
+
+    renderer: am5xy.AxisRendererX.new(root, {
+      minorGridEnabled: true,
+      minGridDistance: 200,
+      minorLabelsEnabled: true,
+    }),
+    tooltip: am5.Tooltip.new(root, {}),
+  })
+);
 
 xAxis.set("minorDateFormats", {
-  day: "dd",
-  month: "MM"
+  // day: "dd",
+  // month: "MM",
+  year: "YYYY",
 });
 
-let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-  renderer: am5xy.AxisRendererY.new(root, {})
-}));
-
+let yAxis = chart.yAxes.push(
+  am5xy.ValueAxis.new(root, {
+    renderer: am5xy.AxisRendererY.new(root, {}),
+  })
+);
 
 // Add series
 // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-let series = chart.series.push(am5xy.LineSeries.new(root, {
-  name: "Series",
-  xAxis: xAxis,
-  yAxis: yAxis,
-  valueYField: "value",
-  valueXField: "date",
-  tooltip: am5.Tooltip.new(root, {
-    labelText: "{valueY}"
+let series = chart.series.push(
+  am5xy.LineSeries.new(root, {
+    name: "Series",
+    xAxis: xAxis,
+    yAxis: yAxis,
+    valueYField: "valor_en_porcentaje",
+    valueXField: "anio",
+    tooltip: am5.Tooltip.new(root, {
+      labelText: "Año: {anio} Valor: {valor_en_porcentaje}",
+    }),
   })
-}));
-
-// Actual bullet
-series.bullets.push(function () {
-  let bulletCircle = am5.Circle.new(root, {
-    radius: 5,
-    fill: series.get("fill")
-  });
-  return am5.Bullet.new(root, {
-    sprite: bulletCircle
-  })
-})
-
-// Add scrollbar
-// https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
-chart.set("scrollbarX", am5.Scrollbar.new(root, {
-  orientation: "horizontal"
-}));
-
-let data = generateDatas(30);
-series.data.setAll(data);
+);
 
 
-// Make stuff animate on load
-// https://www.amcharts.com/docs/v5/concepts/animations/
-series.appear(1000);
-chart.appear(1000, 100);
+// const downloadCSV = () => {
+//   const csvData = 
+// }

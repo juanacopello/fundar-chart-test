@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prueba técnica Juana Copello</title>
+    <title>Prueba técnica - Juana Copello</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="shortcut icon" href="./logo_fundar.png" />
   </head>
   <body>
     <div class="intro-container">
@@ -20,9 +21,9 @@
                 los biocombustibles tradicionales.
               </p>
         </div>
-      
+
     </div>
-    
+
 
     <div class="separador"></div>
 
@@ -34,11 +35,12 @@
     <div class="buttons-container">
         <button class="btn-descarga"><a download="data/energia_baja_carbono.csv" >Descargá</a></button>
         <button class="btn-compartir">Compartir</button>
-        <button class="btn-tercero">??</button>
+        <button class="btn-tercero" onclick="toggleWidth()">??</button>
     </div>
     </div>
     <!-- Gráfico -->
-    <div id="chartdiv" class="chart-container"></div>
+    <div id="chart-cont" class="chart-container"></div>
+
     <p class="fuente-txt">Fuente: Our World in Data</p>
     <p class="aclaracion-txt">
       Nota: La energía primaria se calcula utilizando el "método de
