@@ -22,7 +22,7 @@ let processor = am5.DataProcessor.new(root, {
 
 //Fetch de datos CSV
 am5.net
-  .load("/data/energia_baja_carbono_varios.csv")
+  .load("/data/energia_baja_carbono.csv")
   .then((data) => {
     let fetchedData = data.response;
     console.log(fetchedData);
@@ -57,7 +57,6 @@ am5.net
     });
     
 
-    // series.data.setAll(parsedData);
   })
   .catch((result) => {
     console.log("Result Object:", result);
