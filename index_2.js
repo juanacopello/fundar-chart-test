@@ -37,6 +37,9 @@ var chart2 = root2.container.children.push(am5xy.XYChart.new(root2, {
   wheelY: "zoomX"
 }));
 
+let groupedData = am5.ArrayUtils.group(parsedData, "iso3");
+console.log("data agrupada", groupedData)
+
 
 // Add cursor
 // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
