@@ -26,6 +26,7 @@ myTheme.rule("AxisLabel", ["minor"]).setAll({
 // ]);
 
 let parsedData;
+let allCountries
 
 
     // Process data
@@ -56,12 +57,21 @@ am5.net
 
     processor.processMany(parsedData);
 
+    allCountries = [...new Set(parsedData.map(item => item.iso3))];
+    allCountries.sort()
+    allCountries.forEach(country => {
+      document.getElementById('countryForm').innerHTML += `
+        <label><input class="input-paises" type="checkbox" name="countries" value="${country}">${country}</label>
+      `;
 
+    })
     series.data.setAll(parsedData);
   })
   .catch((result) => {
     console.log("Error loading " + result.xhr.responseURL);
   });
+
+  console.log("paises fuera", allCountries)
 
 // Create chart
 // https://www.amcharts.com/docs/v5/charts/xy-chart/
@@ -133,6 +143,12 @@ let series = chart.series.push(
 );
 
 
+
+
+const countriesArray = ["USA", "Canada", "UK", "Australia", /* Add more countries as needed */];
+
+    // Dynamically generate checkboxes based on the countries array
+  
 // const downloadCSV = () => {
 //   const csvData = 
 // }

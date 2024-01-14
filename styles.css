@@ -6,6 +6,11 @@ body {
     background-color: #EFEFEF;
 }
 
+#countryForm{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .logo-img{
     width: 60px;
     margin: 10px 30px 10px 0;
