@@ -129,7 +129,6 @@ fetch(dataPaises)
       const label = document.createElement("label");
       label.appendChild(checkbox);
       label.appendChild(document.createTextNode(p.pais));
-
       countryForm.appendChild(label);
     });
   });
@@ -196,9 +195,6 @@ fetchData();
 
 // };
 
-/* Muchos line charts
-https://www.amcharts.com/demos/highlighting-line-chart-series-on-legend-hover/
-*/
 
 /* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
 
@@ -242,14 +238,7 @@ const createLineSeries = (pais) => {
   //   });
 };
 
-const clearExistingSeries = () => {
-  if (chart) {
-    // Dispose of each series
-    chart.series.each((series) => {
-      series.dispose();
-    });
-  }
-};
+//Mostrar menu
 
 const toggleDisplay = () => {
   const selectorPaises = document.getElementById("selector-paises");
@@ -259,8 +248,8 @@ const toggleDisplay = () => {
 const botonPaises = document.getElementById("btn-paises");
 botonPaises.addEventListener("click", toggleDisplay);
 
+//Descargar CSV
 const downloadCSV = () => {
-  // Replace "your_file.csv" with the actual path to your CSV file
   const filePath = "/data/energia_baja_carbono.csv";
 
   fetch(filePath)
