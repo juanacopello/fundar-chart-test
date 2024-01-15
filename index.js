@@ -1,8 +1,41 @@
 //Para hacer carrera animada: https://www.amcharts.com/demos/bar-chart-race/
 //https://stackoverflow.com/questions/72941086/amcharts-5-bar-chart-race-valueaxis-reset-on-chart-replay
 
-// https://www.amcharts.com/docs/v5/getting-started/#Root_element
-//let root = am5.Root.new("chart-cont");
+//Mostrar menu
+
+const toggleDisplay = () => {
+  const selectorPaises = document.getElementById("selector-paises");
+  selectorPaises.style.display =
+    selectorPaises.style.display === "none" ? "block" : "none";
+};
+const botonPaises = document.getElementById("btn-paises");
+botonPaises.addEventListener("click", toggleDisplay);
+
+//Descargar CSV
+const downloadCSV = () => {
+  const filePath = "/data/energia_baja_carbono.csv";
+
+  fetch(filePath)
+    .then((response) => response.text())
+    .then((csvData) => {
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+
+      link.download = "energia_baja_carbono_por_pais.csv";
+      link.href = window.URL.createObjectURL(blob);
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+    .catch((error) => {
+      console.error("Error fetching CSV file:", error);
+      alert("No se pudo descargar el recurso. Vuelva a intentarlo más tarde");
+    });
+};
+
+const downloadButton = document.getElementById("btn-descarga");
+downloadButton.addEventListener("click", downloadCSV);
 
 let chart;
 let cursor;
@@ -12,21 +45,24 @@ let yAxis;
 let root;
 let processor;
 
+//Borrar gráfico anterior si existe
+
 const clearChart = (divId) => {
-  am5.array.each(am5.registry.rootElements, (root) => {
+  am5.array.each(am5.registry.rootElements, function(root) {
     if (root.dom.id == divId) {
       root.dispose();
-      console.log("Hola");
-    } else {
-      console.log("no puedo eliminar");
     }
   });
 };
+
+//Creación y configuración del gráfico
 
 const createChart = (divId) => {
   clearChart(divId);
 
   root = am5.Root.new(divId);
+
+  /* Formateador y procesador de datos */
 
   root.dateFormatter.setAll({
     dateFormat: "yyyy",
@@ -59,7 +95,6 @@ const createChart = (divId) => {
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
   //Creación de eje X
-
   xAxis = chart.xAxes.push(
     am5xy.DateAxis.new(root, {
       baseInterval: { timeUnit: "year", count: 1 },
@@ -68,7 +103,7 @@ const createChart = (divId) => {
         count: 10,
         minorGridDistance: 100,
         minorGridEnabled: true,
-        minorLabelsEnabled: true
+        minorLabelsEnabled: true,
       }),
     })
   );
@@ -89,8 +124,6 @@ const createChart = (divId) => {
     })
   );
 };
-
-createChart("chart-cont");
 
 //Lista de paises para el selector
 
@@ -115,12 +148,12 @@ fetch(dataPaises)
       checkbox.addEventListener("change", function () {
         if (this.checked) {
           selectedCountries.push(p.iso3);
-          fetchData();
+          //Acá poner funcion que actualiza
         } else {
           const index = selectedCountries.indexOf(p.iso3);
           if (index !== -1) {
             selectedCountries.splice(index, 1);
-            fetchData();
+            //Acá poner funcion que actualiza
           }
         }
         console.log("Selected Countries:", selectedCountries);
@@ -129,15 +162,13 @@ fetch(dataPaises)
       const label = document.createElement("label");
       label.appendChild(checkbox);
       label.appendChild(document.createTextNode(p.pais));
+      const countryForm = document.getElementById('country-form')
       countryForm.appendChild(label);
     });
   });
 
-/* Formateador y procesador de datos */
-
 let parsedData;
 let allCountries = [];
-
 //Fetch de datos
 const fetchData = () => {
   //Fetch de datos CSV
@@ -170,35 +201,6 @@ const fetchData = () => {
     });
 };
 
-fetchData();
-
-/* CONFIGURACION DEL GRAFICO */
-//Creacion de grafico
-
-// const updateData = () => {
-//   chart.series.values.forEach(c => {
-//     console.log(c._settings.name)
-//   })
-
-//   array1.filter((value1) =>
-//   array2.some((obj) => obj.propertyName === value1)
-// );
-
-//   selectedCountries.forEach((country) => {
-//     const seriesExists = chart.series.values.contains((s) => s._settings.name === country);
-//     console.log(seriesExists)
-//     if (!seriesExists) {
-//       createLineSeries(country);
-//     }
-
-// })
-
-// };
-
-
-/* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
-
-//Funcion para crear gráficos de línea
 let series;
 const createLineSeries = (pais) => {
   let dataPais = parsedData.filter((item) => item.iso3 === pais);
@@ -238,38 +240,36 @@ const createLineSeries = (pais) => {
   //   });
 };
 
-//Mostrar menu
+createChart("chart-cont");
+fetchData();
 
-const toggleDisplay = () => {
-  const selectorPaises = document.getElementById("selector-paises");
-  selectorPaises.style.display =
-    selectorPaises.style.display === "none" ? "block" : "none";
-};
-const botonPaises = document.getElementById("btn-paises");
-botonPaises.addEventListener("click", toggleDisplay);
-
-//Descargar CSV
-const downloadCSV = () => {
-  const filePath = "/data/energia_baja_carbono.csv";
-
-  fetch(filePath)
-    .then((response) => response.text())
-    .then((csvData) => {
-      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-
-      link.download = "energia_baja_carbono_por_pais.csv";
-      link.href = window.URL.createObjectURL(blob);
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    })
-    .catch((error) => {
-      console.error("Error fetching CSV file:", error);
-      alert("No se pudo descargar el recurso. Vuelva a intentarlo más tarde");
-    });
+const updateData = () => {
+  clearChart("chart-cont"); // Clear the existing chart
+  createChart("chart-cont");
+  fetchData();
 };
 
-const downloadButton = document.getElementById("btn-descarga");
-downloadButton.addEventListener("click", downloadCSV);
+let btnPrueba = document.getElementById('btn-prueba')
+btnPrueba.addEventListener('click', updateData)
+
+// const updateData = () => {
+//   chart.series.values.forEach(c => {
+//     console.log(c._settings.name)
+//   })
+
+//   array1.filter((value1) =>
+//   array2.some((obj) => obj.propertyName === value1)
+// );
+
+//   selectedCountries.forEach((country) => {
+//     const seriesExists = chart.series.values.contains((s) => s._settings.name === country);
+//     console.log(seriesExists)
+//     if (!seriesExists) {
+//       createLineSeries(country);
+//     }
+
+// })
+
+// };
+
+/* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
