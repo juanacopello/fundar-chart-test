@@ -7,23 +7,24 @@
 let chart;
 let cursor;
 let xAxis;
+let xRenderer;
 let yAxis;
 let root;
 let processor;
 
-const maybeDisposeRoot = (divId) => {
+const clearChart = (divId) => {
   am5.array.each(am5.registry.rootElements, (root) => {
     if (root.dom.id == divId) {
       root.dispose();
-      console.log("Hola")
+      console.log("Hola");
     } else {
-      console.log("no puedo eliminar")
+      console.log("no puedo eliminar");
     }
   });
 };
 
 const createChart = (divId) => {
-  maybeDisposeRoot(divId);
+  clearChart(divId);
 
   root = am5.Root.new(divId);
 
@@ -65,15 +66,24 @@ const createChart = (divId) => {
       renderer: am5xy.AxisRendererX.new(root, {
         timeUnit: "year",
         count: 10,
+        minorGridDistance: 100,
+        minorGridEnabled: true,
+        minorLabelsEnabled: true
       }),
     })
   );
+
+  xRenderer = xAxis.get("renderer");
+  xRenderer.ticks.template.setAll({
+    stroke: am5.color(0xff0000),
+    visible: true,
+  });
 
   //Creación del eje y
   yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
       renderer: am5xy.AxisRendererY.new(root, {
-        minGridDistance: 100,
+        minGridDistance: 150,
         minorGridEnabled: true,
       }),
     })
@@ -81,8 +91,6 @@ const createChart = (divId) => {
 };
 
 createChart("chart-cont");
-
-
 
 //Lista de paises para el selector
 
@@ -107,12 +115,12 @@ fetch(dataPaises)
       checkbox.addEventListener("change", function () {
         if (this.checked) {
           selectedCountries.push(p.iso3);
-          fetchData()
+          fetchData();
         } else {
           const index = selectedCountries.indexOf(p.iso3);
           if (index !== -1) {
             selectedCountries.splice(index, 1);
-            fetchData()
+            fetchData();
           }
         }
         console.log("Selected Countries:", selectedCountries);
@@ -251,29 +259,28 @@ const toggleDisplay = () => {
 const botonPaises = document.getElementById("btn-paises");
 botonPaises.addEventListener("click", toggleDisplay);
 
-// const botonCompartir = document.getElementById("btn-compartir")
-// botonCompartir.addEventListener("click", updateData)
-
-
 const downloadCSV = () => {
   // Replace "your_file.csv" with the actual path to your CSV file
   const filePath = "/data/energia_baja_carbono.csv";
 
   fetch(filePath)
-    .then(response => response.text())
-    .then(csvData => {
+    .then((response) => response.text())
+    .then((csvData) => {
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
 
-      link.download = "paises_energia_baja_carbono.csv";
+      link.download = "energia_baja_carbono_por_pais.csv";
       link.href = window.URL.createObjectURL(blob);
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     })
-    .catch(error => console.error("Error fetching CSV file:", error));
+    .catch((error) => {
+      console.error("Error fetching CSV file:", error);
+      alert("No se pudo descargar el recurso. Vuelva a intentarlo más tarde");
+    });
 };
 
-const downloadButton = document.getElementById('btn-descarga')
+const downloadButton = document.getElementById("btn-descarga");
 downloadButton.addEventListener("click", downloadCSV);
