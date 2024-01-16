@@ -1,15 +1,41 @@
 //Para hacer carrera animada: https://www.amcharts.com/demos/bar-chart-race/
 //https://stackoverflow.com/questions/72941086/amcharts-5-bar-chart-race-valueaxis-reset-on-chart-replay
+//Cursor + Tooltip > https://codepen.io/team/amcharts/pen/jOwzwXB https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+// Bullets en hover https://codepen.io/team/amcharts/pen/vYeVamo
+
+//Eliminar paises que no están en el listado + Traducción al castellano ESTA NOCHE
+//Search bar
+//Logo para agrandar
+//Carrera animada
+//Leyendas al final de la línea + Configuración de ejes + Configuracion de colores
 
 //Mostrar menu
 
-const toggleDisplay = () => {
-  const selectorPaises = document.getElementById("selector-paises");
-  selectorPaises.style.display =
-    selectorPaises.style.display === "none" ? "block" : "none";
+const selectorPaises = document.getElementById("selector-paises");
+const mostrarPaises = () => {
+  if (
+    selectorPaises.style.display == "none" ||
+    selectorPaises.style.display == ""
+  ) {
+    selectorPaises.style.display = "block";
+  } else {
+    selectorPaises.style.display = "none";
+  }
 };
+
 const botonPaises = document.getElementById("btn-paises");
-botonPaises.addEventListener("click", toggleDisplay);
+botonPaises.addEventListener("click", mostrarPaises);
+
+const ocultarPaises = () => {
+  if (selectorPaises.style.display === "block") {
+    selectorPaises.style.display = "none";
+  } else {
+    selectorPaises.style.display = "block";
+  }
+};
+
+const btnCruz = document.getElementById("cerrar-ventana");
+btnCruz.addEventListener("click", ocultarPaises);
 
 //Descargar CSV
 const downloadCSV = () => {
@@ -39,12 +65,13 @@ downloadButton.addEventListener("click", downloadCSV);
 
 //Deseleccionar todos los checkboxes
 const uncheckAllCheckboxes = () => {
-  document.querySelectorAll('input[type="checkbox"]')
-    .forEach(el => el.checked = false);
-}
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach((el) => (el.checked = false));
+};
 
-let btnEliminar = document.getElementById('eliminar-seleccion')
-btnEliminar.addEventListener('click', uncheckAllCheckboxes)
+let btnEliminar = document.getElementById("eliminar-seleccion");
+btnEliminar.addEventListener("click", uncheckAllCheckboxes);
 
 let chart;
 let cursor;
@@ -53,11 +80,12 @@ let xRenderer;
 let yAxis;
 let root;
 let processor;
+let legend;
 
 //Borrar gráfico anterior si existe
 
 const clearChart = (divId) => {
-  am5.array.each(am5.registry.rootElements, function(root) {
+  am5.array.each(am5.registry.rootElements, function (root) {
     if (root.dom.id == divId) {
       root.dispose();
     }
@@ -94,8 +122,6 @@ const createChart = (divId) => {
     })
   );
 
-
-
   // Creación del cursor
   cursor = chart.set(
     "cursor",
@@ -127,19 +153,24 @@ const createChart = (divId) => {
   //Creación del eje y
   yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
+      min: 0,
+      max: 60,
       renderer: am5xy.AxisRendererY.new(root, {
         minGridDistance: 150,
         minorGridEnabled: true,
       }),
     })
   );
+
+  legend = chart.children.push(am5.Legend.new(root, {}));
+  legend.data.setAll(chart.series.values);
 };
 
 //Lista de paises para el selector
 
-let selectedCountries = ["ARG", "CHL"];
+let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
 
-let countryForm = document.getElementById('countryForm')
+let countryForm = document.getElementById("countryForm");
 const dataPaises = "./data/codigos_paises.json";
 
 fetch(dataPaises)
@@ -161,13 +192,13 @@ fetch(dataPaises)
         if (this.checked) {
           selectedCountries.push(p.iso3);
           //Acá poner funcion que actualiza
-          updateData()
+          updateData();
         } else {
           const index = selectedCountries.indexOf(p.iso3);
           if (index !== -1) {
             selectedCountries.splice(index, 1);
             //Acá poner funcion que actualiza
-            updateData()
+            updateData();
           }
         }
         console.log("Selected Countries:", selectedCountries);
@@ -178,9 +209,8 @@ fetch(dataPaises)
 
       label.appendChild(document.createTextNode(p.pais));
       countryForm.appendChild(label);
-      });
+    });
   });
-
 
 let parsedData;
 let allCountries = [];
@@ -221,26 +251,29 @@ const createLineSeries = (pais) => {
   let dataPais = parsedData.filter((item) => item.iso3 === pais);
   // Agregar serie por cada país seleccionado
   series = chart.series.push(
-    am5xy.LineSeries.new(root, {
+    am5xy.SmoothedXLineSeries.new(root, {
       name: pais,
       xAxis: xAxis,
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
+      legendRangeLabelText: "{iso3}",
       tooltip: am5.Tooltip.new(root, {
         pointerOrientation: "horizontal",
         labelText: "[bold]{anio}",
         forceHidden: true,
-        animationDuration: 0
-      })
+        animationDuration: 0,
+      }),
     })
   );
 
- 
+  series.strokes.template.setAll({
+    strokeWidth: 2,
+  });
 
   series.data.setAll(dataPais);
 
-  series.bullets.push(function() {
+  series.bullets.push(function () {
     // create the circle first
     var circle = am5.Circle.new(root, {
       radius: 6,
@@ -248,21 +281,21 @@ const createLineSeries = (pais) => {
       strokeWidth: 2,
       interactive: true, //required to trigger the state on hover
       fill: am5.color(0xffffff),
-      opacity: 0
+      opacity: 0,
     });
-    
+
     circle.states.create("default", {
-      opacity: 0
+      opacity: 0,
     });
 
     circle.states.create("hover", {
-      opacity: 1
+      opacity: 1,
     });
 
     return am5.Bullet.new(root, {
-      sprite: circle
+      sprite: circle,
     });
-  })
+  });
   //   let tooltip = series.getTooltip()
   //   console.log("tooltip", tooltip)
 
@@ -287,21 +320,21 @@ const createLineSeries = (pais) => {
 
 createChart("chart-cont");
 fetchData();
+
 const updateData = () => {
   createChart("chart-cont");
   fetchData();
 };
 
-
 var previousBulletSprites = [];
 cursor.events.on("cursormoved", cursorMoved);
 
 function cursorMoved() {
-  for(var i = 0; i < previousBulletSprites.length; i++) {
+  for (var i = 0; i < previousBulletSprites.length; i++) {
     previousBulletSprites[i].unhover();
   }
   previousBulletSprites = [];
-  chart.series.each(function(series) {
+  chart.series.each(function (series) {
     var dataItem = series.get("tooltip").dataItem;
     if (dataItem) {
       var bulletSprite = dataItem.bullets[0].get("sprite");
@@ -310,9 +343,5 @@ function cursorMoved() {
     }
   });
 }
-
-
-
-
 
 /* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */

@@ -994,5 +994,13 @@
  {
    "pais": "�land Islands",
    "iso3": "ALA"
- }
+ },
+ {
+  "pais": "Mundo",
+  "iso3": "OWID_WRL"
+},
+{
+  "pais": "Unión Soviética (OWID)",
+  "iso3": "OWID_USS"
+}
 ]
