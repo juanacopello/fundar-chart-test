@@ -1,51 +1,11 @@
 [
  {
-   "pais": "Afganistán",
-   "iso3": "AFG"
- },
- {
-   "pais": "Albania",
-   "iso3": "ALB"
- },
- {
    "pais": "Algeria",
    "iso3": "DZA"
  },
  {
-   "pais": "American Samoa",
-   "iso3": "ASM"
- },
- {
-   "pais": "Andorra",
-   "iso3": "AND"
- },
- {
-   "pais": "Angola",
-   "iso3": "AGO"
- },
- {
-   "pais": "Anguilla",
-   "iso3": "AIA"
- },
- {
-   "pais": "Antarctica",
-   "iso3": "ATA"
- },
- {
-   "pais": "Antigua and Barbuda",
-   "iso3": "ATG"
- },
- {
    "pais": "Argentina",
    "iso3": "ARG"
- },
- {
-   "pais": "Armenia",
-   "iso3": "ARM"
- },
- {
-   "pais": "Aruba",
-   "iso3": "ABW"
  },
  {
    "pais": "Australia",
@@ -56,120 +16,20 @@
    "iso3": "AUT"
  },
  {
-   "pais": "Azerbaijan",
-   "iso3": "AZE"
- },
- {
-   "pais": "Bahamas (the)",
-   "iso3": "BHS"
- },
- {
-   "pais": "Bahrain",
-   "iso3": "BHR"
- },
- {
-   "pais": "Bangladesh",
-   "iso3": "BGD"
- },
- {
-   "pais": "Barbados",
-   "iso3": "BRB"
- },
- {
-   "pais": "Belarus",
-   "iso3": "BLR"
- },
- {
-   "pais": "Belgium",
+   "pais": "Bélgica",
    "iso3": "BEL"
  },
  {
-   "pais": "Belize",
-   "iso3": "BLZ"
- },
- {
-   "pais": "Benin",
-   "iso3": "BEN"
- },
- {
-   "pais": "Bermuda",
-   "iso3": "BMU"
- },
- {
-   "pais": "Bhutan",
-   "iso3": "BTN"
- },
- {
-   "pais": "Bolivia (Plurinational State of)",
-   "iso3": "BOL"
- },
- {
-   "pais": "Bonaire, Sint Eustatius and Saba",
-   "iso3": "BES"
- },
- {
-   "pais": "Bosnia and Herzegovina",
-   "iso3": "BIH"
- },
- {
-   "pais": "Botswana",
-   "iso3": "BWA"
- },
- {
-   "pais": "Bouvet Island",
-   "iso3": "BVT"
- },
- {
-   "pais": "Brazil",
+   "pais": "Brasil",
    "iso3": "BRA"
- },
- {
-   "pais": "British Indian Ocean Territory (the)",
-   "iso3": "IOT"
- },
- {
-   "pais": "Brunei Darussalam",
-   "iso3": "BRN"
  },
  {
    "pais": "Bulgaria",
    "iso3": "BGR"
  },
  {
-   "pais": "Burkina Faso",
-   "iso3": "BFA"
- },
- {
-   "pais": "Burundi",
-   "iso3": "BDI"
- },
- {
-   "pais": "Cabo Verde",
-   "iso3": "CPV"
- },
- {
-   "pais": "Cambodia",
-   "iso3": "KHM"
- },
- {
-   "pais": "Cameroon",
-   "iso3": "CMR"
- },
- {
-   "pais": "Canada",
+   "pais": "Canadá",
    "iso3": "CAN"
- },
- {
-   "pais": "Cayman Islands (the)",
-   "iso3": "CYM"
- },
- {
-   "pais": "Central African Republic (the)",
-   "iso3": "CAF"
- },
- {
-   "pais": "Chad",
-   "iso3": "TCD"
  },
  {
    "pais": "Chile",
@@ -180,55 +40,11 @@
    "iso3": "CHN"
  },
  {
-   "pais": "Christmas Island",
-   "iso3": "CXR"
- },
- {
-   "pais": "Cocos (Keeling) Islands (the)",
-   "iso3": "CCK"
- },
- {
    "pais": "Colombia",
    "iso3": "COL"
  },
  {
-   "pais": "Comoros (the)",
-   "iso3": "COM"
- },
- {
-   "pais": "Congo (the Democratic Republic of the)",
-   "iso3": "COD"
- },
- {
-   "pais": "Congo (the)",
-   "iso3": "COG"
- },
- {
-   "pais": "Cook Islands (the)",
-   "iso3": "COK"
- },
- {
-   "pais": "Costa Rica",
-   "iso3": "CRI"
- },
- {
-   "pais": "Croatia",
-   "iso3": "HRV"
- },
- {
-   "pais": "Cuba",
-   "iso3": "CUB"
- },
- {
-   "pais": "Cura�ao",
-   "iso3": "CUW"
- },
- {
-   "pais": "Cyprus",
-   "iso3": "CYP"
- },
- {
-   "pais": "Czechia",
+   "pais": "República Checa",
    "iso3": "CZE"
  },
  {

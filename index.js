@@ -6,21 +6,13 @@
 //Eliminar paises que no están en el listado + Traducción al castellano ESTA NOCHE
 //Search bar
 //Logo para agrandar
-//Carrera animada
 //Leyendas al final de la línea + Configuración de ejes + Configuracion de colores
 
 //Mostrar menu
 
 const selectorPaises = document.getElementById("selector-paises");
 const mostrarPaises = () => {
-  if (
-    selectorPaises.style.display == "none" ||
-    selectorPaises.style.display == ""
-  ) {
-    selectorPaises.style.display = "block";
-  } else {
-    selectorPaises.style.display = "none";
-  }
+  selectorPaises.style.display = "block";
 };
 
 const botonPaises = document.getElementById("btn-paises");
@@ -101,10 +93,6 @@ const createChart = (divId) => {
 
   /* Formateador y procesador de datos */
 
-  root.dateFormatter.setAll({
-    dateFormat: "yyyy",
-    dateFields: ["valueX"],
-  });
   // Procesamiento de dato
   processor = am5.DataProcessor.new(root, {
     numericFields: ["valor_en_porcentaje"],
@@ -117,8 +105,9 @@ const createChart = (divId) => {
       panX: false,
       panY: false,
       paddingLeft: 0,
-      layout: root.verticalLayout,
+      // layout: root.verticalLayout,
       maxTooltipDistance: 0,
+      // cursor: am5xy.XYCursor.new(root, {})
     })
   );
 
@@ -173,12 +162,15 @@ let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
 let countryForm = document.getElementById("countryForm");
 const dataPaises = "./data/codigos_paises.json";
 
+let dataPaisesFetched;
 fetch(dataPaises)
   .then((response) => {
     return response.json();
   })
   .then((listData) => {
-    listData.forEach((p) => {
+    dataPaisesFetched = listData;
+
+    dataPaisesFetched.forEach((p) => {
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.name = "countries";
@@ -211,6 +203,36 @@ fetch(dataPaises)
       countryForm.appendChild(label);
     });
   });
+
+const searchBar = document.getElementById("search-bar");
+const searchTerm = searchBar.value.toLowerCase();
+
+const filtrarPaises = (searchTerm) => {
+  if (!searchTerm.trim()) {
+    return dataPaisesFetched;
+  }
+  const filteredList = dataPaisesFetched.filter((p) =>
+    p.pais.toLowerCase().includes(searchTerm)
+  );
+  console.log(filteredList);
+  return filteredList
+};
+
+const mostrarResultados = (resultados) => {
+      countryForm.innerHTML = '';
+      resultados.forEach(result => {
+          const listItem = document.createElement('li');
+          listItem.textContent = result.pais;
+          countryForm.appendChild(listItem);
+      });
+}
+
+// Attach an event listener to the search bar input
+searchBar.addEventListener("input", () => {
+  const searchTerm = searchBar.value;
+  const filteredResults = filtrarPaises(searchTerm);
+  mostrarResultados(filteredResults);
+});
 
 let parsedData;
 let allCountries = [];
@@ -257,25 +279,30 @@ const createLineSeries = (pais) => {
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
-      legendRangeLabelText: "{iso3}",
+      setStateOnChildren: true,
       tooltip: am5.Tooltip.new(root, {
-        pointerOrientation: "horizontal",
-        labelText: "[bold]{anio}",
+        labelText: undefined,
         forceHidden: true,
         animationDuration: 0,
       }),
     })
   );
 
+  // let tooltip = series.set("tooltip", am5.Tooltip.new(root, {
+  //   pointerOrientation: "horizontal"
+  // }));
+
+  // tooltip.label.setAll({
+  //   // text: "[bold]{categoryX}:[/]\n[width: 130px]Italy[/] {italy}\n[width: 130px]Germany[/] {germany}\n[width: 130px]United Kingdom[/] {uk}"
+  //   text: "Hola"
+  // });
+
   series.strokes.template.setAll({
     strokeWidth: 2,
   });
 
-  series.data.setAll(dataPais);
-
-  series.bullets.push(function () {
-    // create the circle first
-    var circle = am5.Circle.new(root, {
+  series.bullets.push(() => {
+    let circle = am5.Circle.new(root, {
       radius: 6,
       stroke: series.get("fill"),
       strokeWidth: 2,
@@ -296,6 +323,10 @@ const createLineSeries = (pais) => {
       sprite: circle,
     });
   });
+
+  series.data.setAll(dataPais);
+  return series;
+
   //   let tooltip = series.getTooltip()
   //   console.log("tooltip", tooltip)
 
@@ -326,22 +357,43 @@ const updateData = () => {
   fetchData();
 };
 
-var previousBulletSprites = [];
-cursor.events.on("cursormoved", cursorMoved);
+let previousBulletSprites = [];
 
-function cursorMoved() {
-  for (var i = 0; i < previousBulletSprites.length; i++) {
+const cursorMoved = () => {
+  for (let i = 0; i < previousBulletSprites.length; i++) {
     previousBulletSprites[i].unhover();
   }
+
   previousBulletSprites = [];
   chart.series.each(function (series) {
     var dataItem = series.get("tooltip").dataItem;
     if (dataItem) {
+      console.log(dataItem);
       var bulletSprite = dataItem.bullets[0].get("sprite");
       bulletSprite.hover();
       previousBulletSprites.push(bulletSprite);
     }
   });
-}
+};
+
+cursor.events.on("cursormoved", cursorMoved);
+
+// var previousBulletSprites = [];
+// cursor.events.on("cursormoved", cursorMoved);
+
+// function cursorMoved() {
+//   for (var i = 0; i < previousBulletSprites.length; i++) {
+//     previousBulletSprites[i].unhover();
+//   }
+//   previousBulletSprites = [];
+//   chart.series.each(function (series) {
+//     var dataItem = series.get("tooltip").dataItem;
+//     if (dataItem) {
+//       var bulletSprite = dataItem.bullets[0].get("sprite");
+//       bulletSprite.hover();
+//       previousBulletSprites.push(bulletSprite);
+//     }
+//   });
+// }
 
 /* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
