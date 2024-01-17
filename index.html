@@ -39,19 +39,18 @@
       <button class="btn-compartir" id="btn-compartir">Compartir</button>
       <button class="btn-tercero" onclick="toggleWidth()">??</button>
     </div>
-
-
-   
-
   </div>
 
   <!-- Gráfico -->
   <div id="chart-cont" class="chart-container">
     <div class="selector-paises-container" id="selector-paises">
       <div class="options-container">
-        <input type="text" id="search-bar" placeholder="Search countries">
-        <button id="eliminar-seleccion">Eliminar seleccion</button>
-        <button id="cerrar-ventana">X</button>
+        <input type="text" id="search-bar" placeholder="Buscar">
+        <div class="contenedor-botones">
+          <button id="eliminar-seleccion" class="btn-eliminar">Eliminar selección</button>
+          <button id="cerrar-ventana">X</button>
+        </div>
+      
       </div>
       <form id="countryForm">
     </div>
@@ -68,10 +67,7 @@
 
   <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
   <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/locales/de_DE.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/germanyLow.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/fonts/notosans-sc.js"></script>
+  <script src="//cdn.amcharts.com/lib/5/themes/Animated.js"></script>
   <script src="index.js"></script>
 </body>
 

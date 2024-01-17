@@ -4,7 +4,6 @@
 // Bullets en hover https://codepen.io/team/amcharts/pen/vYeVamo
 
 //Eliminar paises que no están en el listado + Traducción al castellano ESTA NOCHE
-//Search bar
 //Logo para agrandar
 //Leyendas al final de la línea + Configuración de ejes + Configuracion de colores
 
@@ -55,15 +54,7 @@ const downloadCSV = () => {
 const downloadButton = document.getElementById("btn-descarga");
 downloadButton.addEventListener("click", downloadCSV);
 
-//Deseleccionar todos los checkboxes
-const uncheckAllCheckboxes = () => {
-  document
-    .querySelectorAll('input[type="checkbox"]')
-    .forEach((el) => (el.checked = false));
-};
 
-let btnEliminar = document.getElementById("eliminar-seleccion");
-btnEliminar.addEventListener("click", uncheckAllCheckboxes);
 
 let chart;
 let cursor;
@@ -73,6 +64,13 @@ let yAxis;
 let root;
 let processor;
 let legend;
+let myTheme
+
+
+// myTheme.rule("Label").setAll({
+//   fill: am5.color(0xFF0000),
+//   fontSize: "1.5em"
+// });
 
 //Borrar gráfico anterior si existe
 
@@ -90,6 +88,15 @@ const createChart = (divId) => {
   clearChart(divId);
 
   root = am5.Root.new(divId);
+  //root.setThemes([am5themes_Animated.new(root)]);
+
+  myTheme = am5.Theme.new(root);
+  myTheme.rule("Label").setAll({
+    fill: am5.color(0xFF0000),
+    fontSize: "1.5em"
+  });
+
+
 
   /* Formateador y procesador de datos */
 
@@ -99,6 +106,7 @@ const createChart = (divId) => {
     dateFormat: "yyyy",
     dateFields: ["anio"],
   });
+
 
   chart = root.container.children.push(
     am5xy.XYChart.new(root, {
@@ -125,19 +133,17 @@ const createChart = (divId) => {
     am5xy.DateAxis.new(root, {
       baseInterval: { timeUnit: "year", count: 1 },
       renderer: am5xy.AxisRendererX.new(root, {
-        timeUnit: "year",
-        minorGridDistance: 1,
-        minorGridEnabled: true,
-        minorLabelsEnabled: true,
+        // timeUnit: "year",
+        // minorGridDistance: 1,
       }),
     })
   );
 
-  xRenderer = xAxis.get("renderer");
-  xRenderer.ticks.template.setAll({
-    stroke: am5.color(0xff0000),
-    visible: true,
-  });
+  // xRenderer.grid.template.set("visible", false);
+
+
+  //xAxis.renderer.grid.template.disabled = true;
+
 
   //Creación del eje y
   yAxis = chart.yAxes.push(
@@ -146,10 +152,11 @@ const createChart = (divId) => {
       max: 60,
       renderer: am5xy.AxisRendererY.new(root, {
         minGridDistance: 150,
-        minorGridEnabled: true,
       }),
     })
   );
+
+  root.dateFormatter.set("dateFormat", "[bold]yyyy");
 
   legend = chart.children.push(am5.Legend.new(root, {}));
   legend.data.setAll(chart.series.values);
@@ -160,7 +167,7 @@ const createChart = (divId) => {
 let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
 
 let countryForm = document.getElementById("countryForm");
-const dataPaises = "./data/codigos_paises.json";
+const dataPaises = "./data/paises.json";
 
 let dataPaisesFetched;
 fetch(dataPaises)
@@ -175,6 +182,9 @@ fetch(dataPaises)
       checkbox.type = "checkbox";
       checkbox.name = "countries";
       checkbox.value = p.pais;
+      checkbox.classList.add("checkbox-pais");
+
+
 
       if (selectedCountries.includes(p.iso3)) {
         checkbox.checked = true;
@@ -182,11 +192,11 @@ fetch(dataPaises)
 
       checkbox.addEventListener("change", function () {
         if (this.checked) {
-          selectedCountries.push(p.iso3);
+          selectedCountries.push(p.iso3_code);
           //Acá poner funcion que actualiza
           updateData();
         } else {
-          const index = selectedCountries.indexOf(p.iso3);
+          const index = selectedCountries.indexOf(p.iso3_code);
           if (index !== -1) {
             selectedCountries.splice(index, 1);
             //Acá poner funcion que actualiza
@@ -298,31 +308,31 @@ const createLineSeries = (pais) => {
   // });
 
   series.strokes.template.setAll({
-    strokeWidth: 2,
+    strokeWidth: 3,
   });
 
-  series.bullets.push(() => {
-    let circle = am5.Circle.new(root, {
-      radius: 6,
-      stroke: series.get("fill"),
-      strokeWidth: 2,
-      interactive: true, //required to trigger the state on hover
-      fill: am5.color(0xffffff),
-      opacity: 0,
-    });
+  // series.bullets.push(() => {
+  //   let circle = am5.Circle.new(root, {
+  //     radius: 6,
+  //     stroke: series.get("fill"),
+  //     strokeWidth: 2,
+  //     interactive: true, //required to trigger the state on hover
+  //     fill: am5.color(0xffffff),
+  //     opacity: 0,
+  //   });
 
-    circle.states.create("default", {
-      opacity: 0,
-    });
+  //   circle.states.create("default", {
+  //     opacity: 0,
+  //   });
 
-    circle.states.create("hover", {
-      opacity: 1,
-    });
+  //   circle.states.create("hover", {
+  //     opacity: 1,
+  //   });
 
-    return am5.Bullet.new(root, {
-      sprite: circle,
-    });
-  });
+  //   return am5.Bullet.new(root, {
+  //     sprite: circle,
+  //   });
+  // });
 
   series.data.setAll(dataPais);
   return series;
@@ -356,6 +366,18 @@ const updateData = () => {
   createChart("chart-cont");
   fetchData();
 };
+
+//Deseleccionar todos los checkboxes
+const uncheckAllCheckboxes = () => {
+  selectedCountries = []
+  createChart('chart-cont')
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach((el) => (el.checked = false));
+};
+
+let btnEliminar = document.getElementById("eliminar-seleccion");
+btnEliminar.addEventListener("click", uncheckAllCheckboxes);
 
 let previousBulletSprites = [];
 

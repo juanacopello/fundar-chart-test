@@ -1,0 +1,310 @@
+[
+ {
+   "pais": "Alemania",
+   "iso3_code": "DEU"
+ },
+ {
+   "pais": "Arabia Saudita",
+   "iso3_code": "SAU"
+ },
+ {
+   "pais": "Argelia",
+   "iso3_code": "DZA"
+ },
+ {
+   "pais": "Argentina",
+   "iso3_code": "ARG"
+ },
+ {
+   "pais": "Australia",
+   "iso3_code": "AUS"
+ },
+ {
+   "pais": "Austria",
+   "iso3_code": "AUT"
+ },
+ {
+   "pais": "Azerbaiyán",
+   "iso3_code": "AZE"
+ },
+ {
+   "pais": "Bangladesh",
+   "iso3_code": "BGD"
+ },
+ {
+   "pais": "Bélgica",
+   "iso3_code": "BEL"
+ },
+ {
+   "pais": "Bielorrusia",
+   "iso3_code": "BLR"
+ },
+ {
+   "pais": "Brasil",
+   "iso3_code": "BRA"
+ },
+ {
+   "pais": "Bulgaria",
+   "iso3_code": "BGR"
+ },
+ {
+   "pais": "Canadá",
+   "iso3_code": "CAN"
+ },
+ {
+   "pais": "Chile",
+   "iso3_code": "CHL"
+ },
+ {
+   "pais": "China",
+   "iso3_code": "CHN"
+ },
+ {
+   "pais": "Colombia",
+   "iso3_code": "COL"
+ },
+ {
+   "pais": "Croacia",
+   "iso3_code": "HRV"
+ },
+ {
+   "pais": "Dinamarca",
+   "iso3_code": "DNK"
+ },
+ {
+   "pais": "Ecuador",
+   "iso3_code": "ECU"
+ },
+ {
+   "pais": "Egipto",
+   "iso3_code": "EGY"
+ },
+ {
+   "pais": "Eslovaquia",
+   "iso3_code": "SVK"
+ },
+ {
+   "pais": "Eslovenia",
+   "iso3_code": "SVN"
+ },
+ {
+   "pais": "España",
+   "iso3_code": "ESP"
+ },
+ {
+   "pais": "Estados Unidos",
+   "iso3_code": "USA"
+ },
+ {
+   "pais": "Estonia",
+   "iso3_code": "EST"
+ },
+ {
+   "pais": "Filipinas",
+   "iso3_code": "PHL"
+ },
+ {
+   "pais": "Finlandia",
+   "iso3_code": "FIN"
+ },
+ {
+   "pais": "Francia",
+   "iso3_code": "FRA"
+ },
+ {
+   "pais": "Grecia",
+   "iso3_code": "GRC"
+ },
+ {
+   "pais": "Hong Kong",
+   "iso3_code": "HKG"
+ },
+ {
+   "pais": "Hungría",
+   "iso3_code": "HUN"
+ },
+ {
+   "pais": "India",
+   "iso3_code": "IND"
+ },
+ {
+   "pais": "Indonesia",
+   "iso3_code": "IDN"
+ },
+ {
+   "pais": "Irak",
+   "iso3_code": "IRQ"
+ },
+ {
+   "pais": "Irán",
+   "iso3_code": "IRN"
+ },
+ {
+   "pais": "Irlanda",
+   "iso3_code": "IRL"
+ },
+ {
+   "pais": "Islandia",
+   "iso3_code": "ISL"
+ },
+ {
+   "pais": "Israel",
+   "iso3_code": "ISR"
+ },
+ {
+   "pais": "Italia",
+   "iso3_code": "ITA"
+ },
+ {
+   "pais": "Japón",
+   "iso3_code": "JPN"
+ },
+ {
+   "pais": "Kazajstán",
+   "iso3_code": "KAZ"
+ },
+ {
+   "pais": "Letonia",
+   "iso3_code": "LVA"
+ },
+ {
+   "pais": "Lituania",
+   "iso3_code": "LTU"
+ },
+ {
+   "pais": "Luxemburgo",
+   "iso3_code": "LUX"
+ },
+ {
+   "pais": "Malasia",
+   "iso3_code": "MYS"
+ },
+ {
+   "pais": "Marruecos",
+   "iso3_code": "MAR"
+ },
+ {
+   "pais": "México",
+   "iso3_code": "MEX"
+ },
+ {
+   "pais": "Mundo",
+   "iso3_code": "OWID_WRL"
+ },
+ {
+   "pais": "Noruega",
+   "iso3_code": "NOR"
+ },
+ {
+   "pais": "Nueva Zelanda",
+   "iso3_code": "NZL"
+ },
+ {
+   "pais": "Omán",
+   "iso3_code": "OMN"
+ },
+ {
+   "pais": "Países Bajos",
+   "iso3_code": "NLD"
+ },
+ {
+   "pais": "Pakistán",
+   "iso3_code": "PAK"
+ },
+ {
+   "pais": "Perú",
+   "iso3_code": "PER"
+ },
+ {
+   "pais": "Polonia",
+   "iso3_code": "POL"
+ },
+ {
+   "pais": "Portugal",
+   "iso3_code": "PRT"
+ },
+ {
+   "pais": "Reino Unido",
+   "iso3_code": "GBR"
+ },
+ {
+   "pais": "Rep. Checa",
+   "iso3_code": "CZE"
+ },
+ {
+   "pais": "República de Corea",
+   "iso3_code": "KOR"
+ },
+ {
+   "pais": "Rep. del Norte de Macedonia",
+   "iso3_code": "MKD"
+ },
+ {
+   "pais": "Rumania",
+   "iso3_code": "ROU"
+ },
+ {
+   "pais": "Rusia",
+   "iso3_code": "RUS"
+ },
+ {
+   "pais": "Singapur",
+   "iso3_code": "SGP"
+ },
+ {
+   "pais": "Sri Lanka",
+   "iso3_code": "LKA"
+ },
+ {
+   "pais": "Sudáfrica",
+   "iso3_code": "ZAF"
+ },
+ {
+   "pais": "Suecia",
+   "iso3_code": "SWE"
+ },
+ {
+   "pais": "Suiza",
+   "iso3_code": "CHE"
+ },
+ {
+   "pais": "Tailandia",
+   "iso3_code": "THA"
+ },
+ {
+   "pais": "Taiwan (China)",
+   "iso3_code": "TWN"
+ },
+ {
+   "pais": "Trinidad y Tobago",
+   "iso3_code": "TTO"
+ },
+ {
+   "pais": "Turkmenistán",
+   "iso3_code": "TKM"
+ },
+ {
+   "pais": "Turquía",
+   "iso3_code": "TUR"
+ },
+ {
+   "pais": "Ucrania",
+   "iso3_code": "UKR"
+ },
+ {
+   "pais": "Unión sovética",
+   "iso3_code": "OWID_USS"
+ },
+ {
+   "pais": "Uzbekistán",
+   "iso3_code": "UZB"
+ },
+ {
+   "pais": "Venezuela",
+   "iso3_code": "VEN"
+ },
+ {
+   "pais": "Vietnam",
+   "iso3_code": "VNM"
+ }
+]
