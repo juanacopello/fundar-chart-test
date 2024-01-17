@@ -1,14 +1,9 @@
-//Para hacer carrera animada: https://www.amcharts.com/demos/bar-chart-race/
-//https://stackoverflow.com/questions/72941086/amcharts-5-bar-chart-race-valueaxis-reset-on-chart-replay
 //Cursor + Tooltip > https://codepen.io/team/amcharts/pen/jOwzwXB https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
 // Bullets en hover https://codepen.io/team/amcharts/pen/vYeVamo
 
-//Eliminar paises que no están en el listado + Traducción al castellano ESTA NOCHE
-//Logo para agrandar
-//Leyendas al final de la línea + Configuración de ejes + Configuracion de colores
+//Leyendas al final de la línea + Configuración de ejes
 
 //Mostrar menu
-
 const selectorPaises = document.getElementById("selector-paises");
 const mostrarPaises = () => {
   selectorPaises.style.display = "block";
@@ -17,6 +12,7 @@ const mostrarPaises = () => {
 const botonPaises = document.getElementById("btn-paises");
 botonPaises.addEventListener("click", mostrarPaises);
 
+//Ocultar menú
 const ocultarPaises = () => {
   if (selectorPaises.style.display === "block") {
     selectorPaises.style.display = "none";
@@ -54,8 +50,110 @@ const downloadCSV = () => {
 const downloadButton = document.getElementById("btn-descarga");
 downloadButton.addEventListener("click", downloadCSV);
 
+//Hacer gráfico full screen
+const goFullScreen =() =>{
 
+  var elem = document.getElementById('chart-cont');
 
+  if(elem.requestFullscreen){
+      elem.requestFullscreen();
+  }
+  else if(elem.mozRequestFullScreen){
+      elem.mozRequestFullScreen();
+  }
+  else if(elem.webkitRequestFullscreen){
+      elem.webkitRequestFullscreen();
+  }
+  else if(elem.msRequestFullscreen){
+      elem.msRequestFullscreen();
+  }
+}
+
+const fullscreenBtn = document.getElementById('btn-fullscreen')
+fullscreenBtn.addEventListener('click', goFullScreen)
+
+//Lista de paises para el selector
+
+let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
+
+let countryForm = document.getElementById("countryForm");
+const searchBar = document.getElementById("search-bar");
+
+const crearCheckboxes = (data) => {
+  countryForm.innerHTML = ''; // Clear existing checkboxes
+
+  data.forEach((p) => {
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = "countries";
+    checkbox.value = p.pais;
+    checkbox.classList.add("checkbox-pais");
+
+    if (selectedCountries.includes(p.iso3_code)) {
+      checkbox.checked = true;
+    }
+
+    checkbox.addEventListener("change", function () {
+      if (this.checked) {
+        if (!selectedCountries.includes(p.iso3_code)) {
+          selectedCountries.push(p.iso3_code);
+          updateData();
+        }
+      } else {
+        const index = selectedCountries.indexOf(p.iso3_code);
+        if (index !== -1) {
+          selectedCountries.splice(index, 1);
+          updateData();
+        }
+      }
+      console.log("Selected Countries:", selectedCountries);
+    });
+
+    const label = document.createElement("label");
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(p.pais));
+    countryForm.appendChild(label);
+  });
+};
+
+// Filtrar países en barra de búsqueda
+
+const dataPaises = "./data/paises.json";
+let dataPaisesFetched;
+const searchTerm = searchBar.value.toLowerCase();
+
+const filtrarPaises = (searchTerm) => {
+  if (!searchTerm.trim()) {
+    return dataPaisesFetched;
+  }
+  const filteredList = dataPaisesFetched.filter((p) =>
+    p.pais.toLowerCase().includes(searchTerm)
+  );
+  console.log(filteredList);
+  return filteredList
+};
+
+const actualizarCheckboxes = (searchTerm) => {
+  const filteredResults = filtrarPaises(searchTerm);
+  crearCheckboxes(filteredResults);
+};
+
+fetch(dataPaises)
+  .then((response) => {
+    return response.json();
+  })
+  .then((listData) => {
+    dataPaisesFetched = listData;
+    crearCheckboxes(dataPaisesFetched);
+  });
+
+// Attach an event listener to the search bar input
+searchBar.addEventListener("input", () => {
+  const searchTerm = searchBar.value.toLowerCase();
+  actualizarCheckboxes(searchTerm);
+});
+
+/* GRÁFICO */
 let chart;
 let cursor;
 let xAxis;
@@ -65,12 +163,6 @@ let root;
 let processor;
 let legend;
 let myTheme
-
-
-// myTheme.rule("Label").setAll({
-//   fill: am5.color(0xFF0000),
-//   fontSize: "1.5em"
-// });
 
 //Borrar gráfico anterior si existe
 
@@ -113,9 +205,8 @@ const createChart = (divId) => {
       panX: false,
       panY: false,
       paddingLeft: 0,
-      // layout: root.verticalLayout,
+      layout: root.horizontalLayout,
       maxTooltipDistance: 0,
-      // cursor: am5xy.XYCursor.new(root, {})
     })
   );
 
@@ -126,123 +217,91 @@ const createChart = (divId) => {
       behavior: "none",
     })
   );
+
+cursor.lineX.setAll({
+  stroke: am5.color('#4D4D4D'),
+  strokeWidth: 1,
+  strokeDasharray: []
+});
+
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
   //Creación de eje X
   xAxis = chart.xAxes.push(
     am5xy.DateAxis.new(root, {
       baseInterval: { timeUnit: "year", count: 1 },
+      min: new Date(1965, 1, 1).getTime(),
+      max: new Date(2022, 1, 1).getTime(),
       renderer: am5xy.AxisRendererX.new(root, {
-        // timeUnit: "year",
-        // minorGridDistance: 1,
       }),
     })
   );
 
-  // xRenderer.grid.template.set("visible", false);
+  const firstDate = new Date(1965, 1, 1).getTime()
+  let firstDateLocation = xAxis.makeDataItem({ value: firstDate });
+  xAxis.createAxisRange(firstDateLocation);
+
+  firstDateLocation.get("label").setAll({
+    text: 1965,
+    fontSize: 16,
+    forceHidden: false,
+    fontWeight: 800,
+    dx: 20
+  });
+
+  const lastDate = new Date(2022, 1, 1).getTime()
+  let lastDateLocation = xAxis.makeDataItem({ value: lastDate });
+  xAxis.createAxisRange(lastDateLocation);
+
+  lastDateLocation.get("label").setAll({
+    text: 2022,
+    fontSize: 16,
+    forceHidden: false,
+    fontWeight: 800,
+    dx: -20
+
+  });
+
+  let rendererX = xAxis.get("renderer");
+
+  rendererX.labels.template.setAll({
+    fontSize: 16,
+    fontFamily: "Chivo Mono",
+    marginTop: 30
+  });
 
 
-  //xAxis.renderer.grid.template.disabled = true;
 
+  rendererX.grid.template.set("forceHidden", true);
+  chart.get("colors").set("colors", [
+    am5.color('#FF7B03'),
+    am5.color('#006CBA'),
+    am5.color('#000000'),
+    am5.color('#ABBABA'),
+  ]);
 
   //Creación del eje y
   yAxis = chart.yAxes.push(
     am5xy.ValueAxis.new(root, {
       min: 0,
       max: 60,
+      numberFormat: "#'%'",
       renderer: am5xy.AxisRendererY.new(root, {
         minGridDistance: 150,
       }),
     })
   );
 
+  yAxis.get("renderer").labels.template.setAll({
+    fontSize: 18,
+    fontFamily: "Chivo Mono"
+  });
+
   root.dateFormatter.set("dateFormat", "[bold]yyyy");
 
   legend = chart.children.push(am5.Legend.new(root, {}));
   legend.data.setAll(chart.series.values);
 };
-
-//Lista de paises para el selector
-
-let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
-
-let countryForm = document.getElementById("countryForm");
-const dataPaises = "./data/paises.json";
-
-let dataPaisesFetched;
-fetch(dataPaises)
-  .then((response) => {
-    return response.json();
-  })
-  .then((listData) => {
-    dataPaisesFetched = listData;
-
-    dataPaisesFetched.forEach((p) => {
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.name = "countries";
-      checkbox.value = p.pais;
-      checkbox.classList.add("checkbox-pais");
-
-
-
-      if (selectedCountries.includes(p.iso3)) {
-        checkbox.checked = true;
-      }
-
-      checkbox.addEventListener("change", function () {
-        if (this.checked) {
-          selectedCountries.push(p.iso3_code);
-          //Acá poner funcion que actualiza
-          updateData();
-        } else {
-          const index = selectedCountries.indexOf(p.iso3_code);
-          if (index !== -1) {
-            selectedCountries.splice(index, 1);
-            //Acá poner funcion que actualiza
-            updateData();
-          }
-        }
-        console.log("Selected Countries:", selectedCountries);
-      });
-
-      const label = document.createElement("label");
-      label.appendChild(checkbox);
-
-      label.appendChild(document.createTextNode(p.pais));
-      countryForm.appendChild(label);
-    });
-  });
-
-const searchBar = document.getElementById("search-bar");
-const searchTerm = searchBar.value.toLowerCase();
-
-const filtrarPaises = (searchTerm) => {
-  if (!searchTerm.trim()) {
-    return dataPaisesFetched;
-  }
-  const filteredList = dataPaisesFetched.filter((p) =>
-    p.pais.toLowerCase().includes(searchTerm)
-  );
-  console.log(filteredList);
-  return filteredList
-};
-
-const mostrarResultados = (resultados) => {
-      countryForm.innerHTML = '';
-      resultados.forEach(result => {
-          const listItem = document.createElement('li');
-          listItem.textContent = result.pais;
-          countryForm.appendChild(listItem);
-      });
-}
-
-// Attach an event listener to the search bar input
-searchBar.addEventListener("input", () => {
-  const searchTerm = searchBar.value;
-  const filteredResults = filtrarPaises(searchTerm);
-  mostrarResultados(filteredResults);
-});
 
 let parsedData;
 let allCountries = [];
@@ -283,85 +342,61 @@ const createLineSeries = (pais) => {
   let dataPais = parsedData.filter((item) => item.iso3 === pais);
   // Agregar serie por cada país seleccionado
   series = chart.series.push(
-    am5xy.SmoothedXLineSeries.new(root, {
+    am5xy.LineSeries.new(root, {
       name: pais,
       xAxis: xAxis,
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
-      setStateOnChildren: true,
       tooltip: am5.Tooltip.new(root, {
-        labelText: undefined,
-        forceHidden: true,
-        animationDuration: 0,
-      }),
+        text: "{valor_en_porcentaje}"
+      })
     })
   );
-
-  // let tooltip = series.set("tooltip", am5.Tooltip.new(root, {
-  //   pointerOrientation: "horizontal"
-  // }));
-
-  // tooltip.label.setAll({
-  //   // text: "[bold]{categoryX}:[/]\n[width: 130px]Italy[/] {italy}\n[width: 130px]Germany[/] {germany}\n[width: 130px]United Kingdom[/] {uk}"
-  //   text: "Hola"
-  // });
 
   series.strokes.template.setAll({
     strokeWidth: 3,
   });
 
-  // series.bullets.push(() => {
+  // series.bullets.push(function() {
   //   let circle = am5.Circle.new(root, {
   //     radius: 6,
-  //     stroke: series.get("fill"),
+  //     stroke: series.get("stroke"),
   //     strokeWidth: 2,
-  //     interactive: true, //required to trigger the state on hover
-  //     fill: am5.color(0xffffff),
-  //     opacity: 0,
+  //     interactive: true,
+  //     fill: series.get("stroke"),
+  //     opacity: 0
   //   });
-
+    
   //   circle.states.create("default", {
-  //     opacity: 0,
+  //     opacity: 0
   //   });
 
   //   circle.states.create("hover", {
-  //     opacity: 1,
+  //     opacity: 1
   //   });
 
   //   return am5.Bullet.new(root, {
-  //     sprite: circle,
+  //     sprite: circle
   //   });
   // });
+
+
+  // yAxis.axisHeader.children.push(am5.Legend.new(root, {
+  //   y: "pais",
+  //   // centerY: am5.p50
+  // }));
+  // legend.data.setAll([series]);
 
   series.data.setAll(dataPais);
   return series;
 
-  //   let tooltip = series.getTooltip()
-  //   console.log("tooltip", tooltip)
-
-  //   tooltip.label.adapters.add("text", function(text, target) {
-  //     text = "";
-  //     var i = 0;
-  //     chart.series.each(function(series) {
-  //       console.log(series)
-  //       let tooltipDataItem = series.get(_dataItem);
-  //       console.log(tooltipDataItem)
-  //       if(tooltipDataItem){
-  //         if(i != 0){
-  //            text += "\n";
-  //         }
-  //         text += '[' + series.get("stroke").toString() + ']●[/] [bold width:100px]' + series.get("name") + ':[/] ' + tooltipDataItem.get("valueY");
-  //       }
-  //       i++;
-  //     })
-  //     return text
-  //   });
 };
 
 createChart("chart-cont");
 fetchData();
 
+//Actualizar datos cuando selecciono el checkbox
 const updateData = () => {
   createChart("chart-cont");
   fetchData();
@@ -379,43 +414,9 @@ const uncheckAllCheckboxes = () => {
 let btnEliminar = document.getElementById("eliminar-seleccion");
 btnEliminar.addEventListener("click", uncheckAllCheckboxes);
 
-let previousBulletSprites = [];
 
-const cursorMoved = () => {
-  for (let i = 0; i < previousBulletSprites.length; i++) {
-    previousBulletSprites[i].unhover();
-  }
 
-  previousBulletSprites = [];
-  chart.series.each(function (series) {
-    var dataItem = series.get("tooltip").dataItem;
-    if (dataItem) {
-      console.log(dataItem);
-      var bulletSprite = dataItem.bullets[0].get("sprite");
-      bulletSprite.hover();
-      previousBulletSprites.push(bulletSprite);
-    }
-  });
-};
 
-cursor.events.on("cursormoved", cursorMoved);
-
-// var previousBulletSprites = [];
-// cursor.events.on("cursormoved", cursorMoved);
-
-// function cursorMoved() {
-//   for (var i = 0; i < previousBulletSprites.length; i++) {
-//     previousBulletSprites[i].unhover();
-//   }
-//   previousBulletSprites = [];
-//   chart.series.each(function (series) {
-//     var dataItem = series.get("tooltip").dataItem;
-//     if (dataItem) {
-//       var bulletSprite = dataItem.bullets[0].get("sprite");
-//       bulletSprite.hover();
-//       previousBulletSprites.push(bulletSprite);
-//     }
-//   });
-// }
 
 /* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
+

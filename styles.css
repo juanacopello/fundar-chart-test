@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Chivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body {
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
     background-color: #EFEFEF;
 }
@@ -10,6 +10,20 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin: 30px 10px;
+}
+
+.icon-fullscreen{
+    width: 15px;
+    height: 15px;
+    margin-top: 3px;
+}
+
+.btn-fullscreen{
+    height: 40px;
+    width: 40px;
+}
+:fullscreen, ::backdrop {
+    background-color: #EFEFEF;
 }
 
 #cerrar-ventana{
@@ -106,10 +120,14 @@ input[type="checkbox"]{
     font-family: "Chivo Mono";
     font-weight: 400;
     font-size: 17px;
-    padding: 5px 10px;
-    margin: 5px;
+    padding: 5px 20px;
+    margin: 5px 30px;
     cursor: pointer;
   
+}
+
+.btn-descarga:hover, .btn-compartir:hover, .btn-fullscreen:hover{
+    background-color: #E4E6E6;
 }
 
 .btn-seleccion-paises:hover{
@@ -126,7 +144,10 @@ input[type="checkbox"]{
     width: 50%;
     border-radius: 20px;
     background-color: black;
-    /* color: white; */
+    color: white;
+    font-family: "Chivo Mono";
+    font-size: 16px;
+    padding-left: 20px;
 }
 
 #eliminar-seleccion{
@@ -135,8 +156,7 @@ input[type="checkbox"]{
 #search-bar::placeholder{
     color: white;
     font-family: "Chivo Mono";
-    font-size: 16px;
-    margin-left: 20px;
+    padding-left: 20px;
 }
 
 .selector-paises-container{
@@ -157,6 +177,9 @@ label{
     font-family: "Chivo Mono";
     font-size: 18px;
     padding: 8px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 .btn-seleccion-paises{
     background-color: #ABBABA;
@@ -172,10 +195,10 @@ label{
     width: auto;
 }
 
-.btn-tercero{
+.btn-fullscreen{
     border-radius: 50px;
     background-color: #ffffff;
-
+    cursor: pointer;
 }
 
 .buttons-container{
@@ -225,9 +248,9 @@ label{
     
     }
 
-    .buttons-container{
+    /* .buttons-container{
         margin-right: 0px;
-    }
+    } */
 
     .logo-img{
         margin: 20px 0;
@@ -235,6 +258,10 @@ label{
 
     .intro-container{
         flex-direction: column;
+    }
+
+    .brn-descarga, .btn-compartir, .btn-fullscreen{
+        margin: 5px;
     }
 
     .options-container{
@@ -249,5 +276,13 @@ label{
 
     label{
         font-size: 12px;
+    }
+
+    #countryForm{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .selector-paises-container{
+        padding: 0;
     }
 }
