@@ -51,36 +51,31 @@ const downloadButton = document.getElementById("btn-descarga");
 downloadButton.addEventListener("click", downloadCSV);
 
 //Hacer gráfico full screen
-const goFullScreen =() =>{
+const goFullScreen = () => {
+  var elem = document.getElementById("chart-cont");
 
-  var elem = document.getElementById('chart-cont');
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+};
 
-  if(elem.requestFullscreen){
-      elem.requestFullscreen();
-  }
-  else if(elem.mozRequestFullScreen){
-      elem.mozRequestFullScreen();
-  }
-  else if(elem.webkitRequestFullscreen){
-      elem.webkitRequestFullscreen();
-  }
-  else if(elem.msRequestFullscreen){
-      elem.msRequestFullscreen();
-  }
-}
-
-const fullscreenBtn = document.getElementById('btn-fullscreen')
-fullscreenBtn.addEventListener('click', goFullScreen)
+const fullscreenBtn = document.getElementById("btn-fullscreen");
+fullscreenBtn.addEventListener("click", goFullScreen);
 
 //Lista de paises para el selector
 
 let selectedCountries = ["ARG", "OWID_WRL", "BRA", "CHL"];
-
 let countryForm = document.getElementById("countryForm");
 const searchBar = document.getElementById("search-bar");
 
 const crearCheckboxes = (data) => {
-  countryForm.innerHTML = ''; // Clear existing checkboxes
+  countryForm.innerHTML = ""; // Clear existing checkboxes
 
   data.forEach((p) => {
     const checkbox = document.createElement("input");
@@ -130,7 +125,7 @@ const filtrarPaises = (searchTerm) => {
     p.pais.toLowerCase().includes(searchTerm)
   );
   console.log(filteredList);
-  return filteredList
+  return filteredList;
 };
 
 const actualizarCheckboxes = (searchTerm) => {
@@ -147,11 +142,22 @@ fetch(dataPaises)
     crearCheckboxes(dataPaisesFetched);
   });
 
-// Attach an event listener to the search bar input
 searchBar.addEventListener("input", () => {
   const searchTerm = searchBar.value.toLowerCase();
   actualizarCheckboxes(searchTerm);
 });
+
+//Deseleccionar todos los checkboxes
+const uncheckAllCheckboxes = () => {
+  selectedCountries = [];
+  createChart("chart-cont");
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach((el) => (el.checked = false));
+};
+
+let btnEliminar = document.getElementById("eliminar-seleccion");
+btnEliminar.addEventListener("click", uncheckAllCheckboxes);
 
 /* GRÁFICO */
 let chart;
@@ -162,7 +168,7 @@ let yAxis;
 let root;
 let processor;
 let legend;
-let myTheme
+let myTheme;
 
 //Borrar gráfico anterior si existe
 
@@ -180,15 +186,12 @@ const createChart = (divId) => {
   clearChart(divId);
 
   root = am5.Root.new(divId);
-  //root.setThemes([am5themes_Animated.new(root)]);
 
   myTheme = am5.Theme.new(root);
   myTheme.rule("Label").setAll({
-    fill: am5.color(0xFF0000),
-    fontSize: "1.5em"
+    fill: am5.color(0xff0000),
+    fontSize: "1.5em",
   });
-
-
 
   /* Formateador y procesador de datos */
 
@@ -199,7 +202,6 @@ const createChart = (divId) => {
     dateFields: ["anio"],
   });
 
-
   chart = root.container.children.push(
     am5xy.XYChart.new(root, {
       panX: false,
@@ -207,6 +209,7 @@ const createChart = (divId) => {
       paddingLeft: 0,
       layout: root.horizontalLayout,
       maxTooltipDistance: 0,
+        
     })
   );
 
@@ -214,15 +217,15 @@ const createChart = (divId) => {
   cursor = chart.set(
     "cursor",
     am5xy.XYCursor.new(root, {
-      behavior: "none",
+      behavior: "zoomX"
     })
   );
 
-cursor.lineX.setAll({
-  stroke: am5.color('#4D4D4D'),
-  strokeWidth: 1,
-  strokeDasharray: []
-});
+  cursor.lineX.setAll({
+    stroke: am5.color("#4D4D4D"),
+    strokeWidth: 1,
+    strokeDasharray: [],
+  });
 
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
@@ -232,12 +235,11 @@ cursor.lineX.setAll({
       baseInterval: { timeUnit: "year", count: 1 },
       min: new Date(1965, 1, 1).getTime(),
       max: new Date(2022, 1, 1).getTime(),
-      renderer: am5xy.AxisRendererX.new(root, {
-      }),
+      renderer: am5xy.AxisRendererX.new(root, {}),
     })
   );
 
-  const firstDate = new Date(1965, 1, 1).getTime()
+  const firstDate = new Date(1965, 1, 1).getTime();
   let firstDateLocation = xAxis.makeDataItem({ value: firstDate });
   xAxis.createAxisRange(firstDateLocation);
 
@@ -246,10 +248,10 @@ cursor.lineX.setAll({
     fontSize: 16,
     forceHidden: false,
     fontWeight: 800,
-    dx: 20
+    dx: 20,
   });
 
-  const lastDate = new Date(2022, 1, 1).getTime()
+  const lastDate = new Date(2022, 1, 1).getTime();
   let lastDateLocation = xAxis.makeDataItem({ value: lastDate });
   xAxis.createAxisRange(lastDateLocation);
 
@@ -258,8 +260,7 @@ cursor.lineX.setAll({
     fontSize: 16,
     forceHidden: false,
     fontWeight: 800,
-    dx: -20
-
+    dx: -20,
   });
 
   let rendererX = xAxis.get("renderer");
@@ -267,18 +268,18 @@ cursor.lineX.setAll({
   rendererX.labels.template.setAll({
     fontSize: 16,
     fontFamily: "Chivo Mono",
-    marginTop: 30
+    marginTop: 30,
   });
 
-
-
   rendererX.grid.template.set("forceHidden", true);
-  chart.get("colors").set("colors", [
-    am5.color('#FF7B03'),
-    am5.color('#006CBA'),
-    am5.color('#000000'),
-    am5.color('#ABBABA'),
-  ]);
+  chart
+    .get("colors")
+    .set("colors", [
+      am5.color("#FF7B03"),
+      am5.color("#006CBA"),
+      am5.color("#000000"),
+      am5.color("#ABBABA"),
+    ]);
 
   //Creación del eje y
   yAxis = chart.yAxes.push(
@@ -294,7 +295,7 @@ cursor.lineX.setAll({
 
   yAxis.get("renderer").labels.template.setAll({
     fontSize: 18,
-    fontFamily: "Chivo Mono"
+    fontFamily: "Chivo Mono",
   });
 
   root.dateFormatter.set("dateFormat", "[bold]yyyy");
@@ -348,39 +349,21 @@ const createLineSeries = (pais) => {
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
+      legendRangeLabelText: "{iso3}",
       tooltip: am5.Tooltip.new(root, {
-        text: "{valor_en_porcentaje}"
-      })
+            getFillFromSprite: false,
+            getStrokeFromSprite: false,
+            autoTextColor: false,
+            getLabelFillFromSprite: false,
+            labelText: "[bold]{anio}[/]\n{pais}: {valor_en_porcentaje}",
+            forceHidden: false,
+        }),
     })
   );
 
   series.strokes.template.setAll({
     strokeWidth: 3,
   });
-
-  // series.bullets.push(function() {
-  //   let circle = am5.Circle.new(root, {
-  //     radius: 6,
-  //     stroke: series.get("stroke"),
-  //     strokeWidth: 2,
-  //     interactive: true,
-  //     fill: series.get("stroke"),
-  //     opacity: 0
-  //   });
-    
-  //   circle.states.create("default", {
-  //     opacity: 0
-  //   });
-
-  //   circle.states.create("hover", {
-  //     opacity: 1
-  //   });
-
-  //   return am5.Bullet.new(root, {
-  //     sprite: circle
-  //   });
-  // });
-
 
   // yAxis.axisHeader.children.push(am5.Legend.new(root, {
   //   y: "pais",
@@ -389,9 +372,110 @@ const createLineSeries = (pais) => {
   // legend.data.setAll([series]);
 
   series.data.setAll(dataPais);
-  return series;
 
+  //Bullets en hover
+  series.bullets.push(() => {
+    let circle = am5.Circle.new(root, {
+      strokeWidth: 3,
+      stroke: series.get("fill"),
+      radius: 8,
+      opacity: 0,
+      toggleKey: "active",
+      tooltipHTML: "<strong>{anio}</strong><hr><p><span style='color:red;'>&#9679</span> {valor_en_porcentaje}%</p>",
+      interactive: true, //required to trigger the state on hover
+      fill: series.get("fill"),
+    });
+
+    circle.states.create("default", {
+      opacity: 0,
+    });
+
+    circle.states.create("hover", {
+      opacity: 1,
+    });
+
+    return am5.Bullet.new(root, {
+      sprite: circle,
+    });
+  });
+
+  let tooltip = series.get("tooltip")
+  tooltip.label.adapters.add("labelText", function(text, target) {
+    text = "";
+    var i = 0;
+    chart.series.each(function(series) {
+    let targetDataItem = series.dataItem
+    console.log(targetDataItem)
+
+    })
+    // chart.series.each(function(series) {
+    //   console.log(series)
+    //   var tooltipDataItem = tooltip.get("data");
+    //   console.log(tooltipDataItem)
+    //   if (tooltipDataItem){
+    //     if(i != 0){
+    //        text += "\n";
+    //     }
+    //     text += '[' + series.get("stroke").toString() + ']●[/] [bold width:100px]' + series.get("name") + ':[/] ' + tooltipDataItem.get("valueY");
+    //   }
+
+    //   i++;
+    // })
+
+    // return text
+  });
+
+  //cursor.events.on("cursormoved", cursorMoved);
+
+  return series;
 };
+
+//let previousBulletSprites = [];
+
+// const cursorMoved = (ev) => {
+//   for (var i = 0; i < previousBulletSprites.length; i++) {
+//     previousBulletSprites[i].unhover();
+//   }
+
+//   previousBulletSprites = [];
+
+//   // chart.series.each((series) => {
+//   //   // let dataItem = series.get("tooltip").dataItem;
+//   //   // console.log("data item", dataItem);
+//   //   // if (dataItem) {
+//   //     var bulletSprite = dataItem.bullets[0].get("sprite");
+//   //     bulletSprite.hover();
+//   //     previousBulletSprites.push(bulletSprite);
+    
+//   // });
+
+//   let x = ev.target.getPrivate("positionX");
+//   let y = ev.target.getPrivate("positionY");
+  
+//   let dateX = xAxis.positionToDate(x);
+//   let valueY = yAxis.positionToValue(y);
+//   console.log(dateX)
+//   console.log(valueY)
+// };
+
+var previousBulletSprites = [];
+
+function cursorMoved() {
+  for(var i = 0; i < previousBulletSprites.length; i++) {
+    previousBulletSprites[i].unhover();
+  }
+  previousBulletSprites = [];
+  chart.series.each(function(series) {
+    console.log("series", series)
+    var dataItem = tooltip.get("DataItem")
+    console.log("data item", dataItem)
+    // if (dataItem) {
+    //   var bulletSprite = dataItem.bullets[0].get("sprite");
+    //   bulletSprite.hover();
+    //   previousBulletSprites.push(bulletSprite);
+    // }
+  });
+}
 
 createChart("chart-cont");
 fetchData();
@@ -402,21 +486,4 @@ const updateData = () => {
   fetchData();
 };
 
-//Deseleccionar todos los checkboxes
-const uncheckAllCheckboxes = () => {
-  selectedCountries = []
-  createChart('chart-cont')
-  document
-    .querySelectorAll('input[type="checkbox"]')
-    .forEach((el) => (el.checked = false));
-};
-
-let btnEliminar = document.getElementById("eliminar-seleccion");
-btnEliminar.addEventListener("click", uncheckAllCheckboxes);
-
-
-
-
-
 /* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
-
