@@ -26,7 +26,7 @@ btnCruz.addEventListener("click", ocultarPaises);
 
 //Descargar CSV
 const downloadCSV = () => {
-  const filePath = "/data/energia_baja_carbono.csv";
+  const filePath = "./data/energia_baja_carbono.csv";
 
   fetch(filePath)
     .then((response) => response.text())
@@ -101,7 +101,6 @@ const crearCheckboxes = (data) => {
           updateData();
         }
       }
-      console.log("Selected Countries:", selectedCountries);
     });
 
     const label = document.createElement("label");
@@ -124,7 +123,6 @@ const filtrarPaises = (searchTerm) => {
   const filteredList = dataPaisesFetched.filter((p) =>
     p.pais.toLowerCase().includes(searchTerm)
   );
-  console.log(filteredList);
   return filteredList;
 };
 
@@ -206,10 +204,8 @@ const createChart = (divId) => {
     am5xy.XYChart.new(root, {
       panX: false,
       panY: false,
-      paddingLeft: 0,
-      layout: root.horizontalLayout,
-      maxTooltipDistance: 0,
-        
+      padding: 20,
+      paddingRight:50,
     })
   );
 
@@ -228,6 +224,8 @@ const createChart = (divId) => {
   });
 
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
+
+
 
   //Creación de eje X
   xAxis = chart.xAxes.push(
@@ -310,7 +308,7 @@ let allCountries = [];
 const fetchData = () => {
   //Fetch de datos CSV
   am5.net
-    .load("/data/energia_baja_carbono.csv")
+    .load("./data/energia_baja_carbono.csv")
     .then((data) => {
       let fetchedData = data.response;
 
@@ -349,41 +347,35 @@ const createLineSeries = (pais) => {
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
-      legendRangeLabelText: "{iso3}",
+      stroke: "color_pais",
       tooltip: am5.Tooltip.new(root, {
             getFillFromSprite: false,
             getStrokeFromSprite: false,
             autoTextColor: false,
             getLabelFillFromSprite: false,
-            labelText: "[bold]{anio}[/]\n{pais}: {valor_en_porcentaje}",
-            forceHidden: false,
+            forceHidden: true,
         }),
     })
   );
 
+
   series.strokes.template.setAll({
     strokeWidth: 3,
   });
-
-  // yAxis.axisHeader.children.push(am5.Legend.new(root, {
-  //   y: "pais",
-  //   // centerY: am5.p50
-  // }));
-  // legend.data.setAll([series]);
-
   series.data.setAll(dataPais);
+
 
   //Bullets en hover
   series.bullets.push(() => {
     let circle = am5.Circle.new(root, {
-      strokeWidth: 3,
-      stroke: series.get("fill"),
+      strokeWidth: 0,
       radius: 8,
       opacity: 0,
       toggleKey: "active",
-      tooltipHTML: "<strong>{anio}</strong><hr><p><span style='color:red;'>&#9679</span> {valor_en_porcentaje}%</p>",
-      interactive: true, //required to trigger the state on hover
-      fill: series.get("fill"),
+      pointerOrientation: "horizontal",
+      tooltipHTML: "<div class='tooltip-bg'><strong class='tooltip-year'>{anio_txt}</strong><hr><p class='pais-detalle'><span style='color:{color};' class='punto-tooltip'>&#9679</span>{pais}: {valor_en_porcentaje.formatNumber('#.00')}%</p></div>",
+      interactive: true,
+      fill: '#ffffff',
     });
 
     circle.states.create("default", {
@@ -399,84 +391,29 @@ const createLineSeries = (pais) => {
     });
   });
 
-  let tooltip = series.get("tooltip")
-  tooltip.label.adapters.add("labelText", function(text, target) {
-    text = "";
-    var i = 0;
-    chart.series.each(function(series) {
-    let targetDataItem = series.dataItem
-    console.log(targetDataItem)
+  /*Funcion que buscaba poner el nombre del pais al final del gráfico<
 
-    })
-    // chart.series.each(function(series) {
-    //   console.log(series)
-    //   var tooltipDataItem = tooltip.get("data");
-    //   console.log(tooltipDataItem)
-    //   if (tooltipDataItem){
-    //     if(i != 0){
-    //        text += "\n";
-    //     }
-    //     text += '[' + series.get("stroke").toString() + ']●[/] [bold width:100px]' + series.get("name") + ':[/] ' + tooltipDataItem.get("valueY");
-    //   }
+  series.bullets.push(function(root, series, dataItem) {
 
-    //   i++;
-    // })
+    var lastIndex = series.dataItems.length - 1;
 
-    // return text
+    if (series.dataItems.indexOf(dataItem) == lastIndex) {
+      return am5.Bullet.new(root, {
+        opacity: 1,
+        sprite: am5.Label.new(root, {
+          text: dataItem.dataContext.pais,
+          fill: series.get("fill"),
+        })
+      });
+    }
+  
   });
-
-  //cursor.events.on("cursormoved", cursorMoved);
-
+  
   return series;
 };
+*/
 
-//let previousBulletSprites = [];
-
-// const cursorMoved = (ev) => {
-//   for (var i = 0; i < previousBulletSprites.length; i++) {
-//     previousBulletSprites[i].unhover();
-//   }
-
-//   previousBulletSprites = [];
-
-//   // chart.series.each((series) => {
-//   //   // let dataItem = series.get("tooltip").dataItem;
-//   //   // console.log("data item", dataItem);
-//   //   // if (dataItem) {
-//   //     var bulletSprite = dataItem.bullets[0].get("sprite");
-//   //     bulletSprite.hover();
-//   //     previousBulletSprites.push(bulletSprite);
-    
-//   // });
-
-//   let x = ev.target.getPrivate("positionX");
-//   let y = ev.target.getPrivate("positionY");
-  
-//   let dateX = xAxis.positionToDate(x);
-//   let valueY = yAxis.positionToValue(y);
-//   console.log(dateX)
-//   console.log(valueY)
-// };
-
-var previousBulletSprites = [];
-
-function cursorMoved() {
-  for(var i = 0; i < previousBulletSprites.length; i++) {
-    previousBulletSprites[i].unhover();
-  }
-  previousBulletSprites = [];
-  chart.series.each(function(series) {
-    console.log("series", series)
-    var dataItem = tooltip.get("DataItem")
-    console.log("data item", dataItem)
-    // if (dataItem) {
-    //   var bulletSprite = dataItem.bullets[0].get("sprite");
-    //   bulletSprite.hover();
-    //   previousBulletSprites.push(bulletSprite);
-    // }
-  });
 }
-
 createChart("chart-cont");
 fetchData();
 

@@ -33,6 +33,28 @@ body {
     cursor: pointer;
 }
 
+
+.tooltip-year{
+    font-size: 16px;
+    font-family: "Chivo Mono";
+    text-align: center;
+    margin: auto;
+}
+
+.pais-detalle{
+    font-family: 'Chivo';
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+
+
+.punto-tooltip{
+    font-size: 25px;
+    vertical-align: middle;
+    margin: auto;
+}
+
 #cerrar-ventana:hover, .btn-eliminar:hover{
     background-color: black;
     color: white;
