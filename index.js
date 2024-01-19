@@ -26,7 +26,7 @@ btnCruz.addEventListener("click", ocultarPaises);
 
 //Descargar CSV
 const downloadCSV = () => {
-  const filePath = "./data/energia_baja_carbono.csv";
+  const filePath = "./data/energia_baja_carbono_por_pais.csv";
 
   fetch(filePath)
     .then((response) => response.text())
