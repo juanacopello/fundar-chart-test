@@ -1,8 +1,3 @@
-//Cursor + Tooltip > https://codepen.io/team/amcharts/pen/jOwzwXB https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-// Bullets en hover https://codepen.io/team/amcharts/pen/vYeVamo
-
-//Leyendas al final de la línea + Configuración de ejes
-
 //Mostrar menu
 const selectorPaises = document.getElementById("selector-paises");
 const mostrarPaises = () => {
@@ -75,7 +70,7 @@ let countryForm = document.getElementById("countryForm");
 const searchBar = document.getElementById("search-bar");
 
 const crearCheckboxes = (data) => {
-  countryForm.innerHTML = ""; // Clear existing checkboxes
+  countryForm.innerHTML = "";
 
   data.forEach((p) => {
     const checkbox = document.createElement("input");
@@ -227,7 +222,7 @@ const createChart = (divId) => {
 
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
- colors = chart.get("colors");
+ colors = chart.get("colors"); //colores para grafico
 
 
   //Creación de eje X
@@ -239,6 +234,8 @@ const createChart = (divId) => {
       renderer: am5xy.AxisRendererX.new(root, {}),
     })
   );
+
+  //Pongo 1965 y 2022 en el gráfico
 
   const firstDate = new Date(1965, 1, 1).getTime();
   let firstDateLocation = xAxis.makeDataItem({ value: firstDate });
@@ -263,6 +260,8 @@ const createChart = (divId) => {
     fontWeight: 800,
     dx: -20,
   });
+
+  //config de estilos de eje x
 
   let rendererX = xAxis.get("renderer");
 
@@ -299,6 +298,7 @@ const createChart = (divId) => {
     })
   );
 
+  //config estilos de eje y
   yAxis.get("renderer").labels.template.setAll({
     fontSize: 18,
     fontFamily: "Chivo Mono",
@@ -329,7 +329,6 @@ const fetchData = () => {
       });
 
       processor.processMany(parsedData);
-      console.log(parsedData)
 
       //Creo una linea por cada pais
       selectedCountries.forEach((item) => {
@@ -381,7 +380,7 @@ const createLineSeries = (pais) => {
       opacity: 0,
       toggleKey: "active",
       pointerOrientation: "horizontal",
-      tooltipHTML: "<div class='tooltip-bg'><strong class='tooltip-year'>{anio_txt}</strong><hr><p class='pais-detalle'><span style='color:{color};' class='punto-tooltip'>&#9679</span>{pais}: {valor_en_porcentaje.formatNumber('#.00')}%</p></div>",
+      tooltipHTML: "<div class='tooltip-bg'><strong class='tooltip-year'>{anio_txt}</strong><hr><p class='pais-detalle'><span style='color:{color_pais};' class='punto-tooltip'>&#9679</span>{pais}: {valor_en_porcentaje.formatNumber('#.00')}%</p></div>",
       interactive: true,
       fill: '#ffffff',
     });
@@ -431,4 +430,3 @@ const updateData = () => {
   fetchData();
 };
 
-/* https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/ */
