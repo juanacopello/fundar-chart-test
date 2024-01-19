@@ -198,6 +198,7 @@ const createChart = (divId) => {
     numericFields: ["valor_en_porcentaje"],
     dateFormat: "yyyy",
     dateFields: ["anio"],
+    colorFields: ["color_pais"]
   });
 
   chart = root.container.children.push(
@@ -217,6 +218,7 @@ const createChart = (divId) => {
     })
   );
 
+
   cursor.lineX.setAll({
     stroke: am5.color("#4D4D4D"),
     strokeWidth: 1,
@@ -225,6 +227,7 @@ const createChart = (divId) => {
 
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
+ colors = chart.get("colors");
 
 
   //Creación de eje X
@@ -277,6 +280,11 @@ const createChart = (divId) => {
       am5.color("#006CBA"),
       am5.color("#000000"),
       am5.color("#ABBABA"),
+      am5.color("#4B4BB0"),
+      am5.color("#720034"),
+      am5.color("#608584"),
+      am5.color("#C43E3E"),
+      am5.color("#CCE3F1")
     ]);
 
   //Creación del eje y
@@ -321,6 +329,7 @@ const fetchData = () => {
       });
 
       processor.processMany(parsedData);
+      console.log(parsedData)
 
       //Creo una linea por cada pais
       selectedCountries.forEach((item) => {
@@ -347,7 +356,6 @@ const createLineSeries = (pais) => {
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
-      stroke: "color_pais",
       tooltip: am5.Tooltip.new(root, {
             getFillFromSprite: false,
             getStrokeFromSprite: false,
