@@ -1,5 +1,4 @@
 # Fundar Chart Test
 
-Test técnico para Fundar utilizando [https://amcharts.com/]amCharts 5
+Test técnico para Fundar utilizando amCharts 5 (https://amcharts.com/)
 
-Enlace a repositorio: https://juanacopello.github.io/fundar-chart-test/
