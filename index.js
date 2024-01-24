@@ -11,8 +11,6 @@ botonPaises.addEventListener("click", mostrarPaises);
 const ocultarPaises = () => {
   if (selectorPaises.style.display === "block") {
     selectorPaises.style.display = "none";
-  } else {
-    selectorPaises.style.display = "block";
   }
 };
 
@@ -231,6 +229,8 @@ const createChart = (divId) => {
       baseInterval: { timeUnit: "year", count: 1 },
       min: new Date(1965, 1, 1).getTime(),
       max: new Date(2022, 1, 1).getTime(),
+      minPosition: 0.1,
+      maxPosition: 0.8, 
       renderer: am5xy.AxisRendererX.new(root, {}),
     })
   );
@@ -380,9 +380,8 @@ const createLineSeries = (pais) => {
       opacity: 0,
       toggleKey: "active",
       pointerOrientation: "horizontal",
-      tooltipHTML: "<div class='tooltip-bg'><strong class='tooltip-year'>{anio_txt}</strong><hr><p class='pais-detalle'><span style='color:{color_pais};' class='punto-tooltip'>&#9679</span>{pais}: {valor_en_porcentaje.formatNumber('#.00')}%</p></div>",
       interactive: true,
-      fill: '#ffffff',
+      fill: "red"
     });
 
     circle.states.create("default", {
@@ -392,6 +391,30 @@ const createLineSeries = (pais) => {
     circle.states.create("hover", {
       opacity: 1,
     });
+
+    circle.adapters.add("tooltipHTML", (text, target) => {
+      if (target.dataItem) {
+        const dataItem = target.dataItem.dataContext
+        let divTool = `<div class="tooltip-bg"><p class="tooltip-year">${dataItem.anio_txt}</p>`;
+
+        const hoverCountries = parsedData
+          .filter((d) => d.anio_txt === dataItem.anio_txt && selectedCountries.includes(d.iso3))
+          .map((d) => {
+            divTool += `<p class="pais-detalle"><span style='color:${d.color_pais};' class='punto-tooltip'>&#9679</span>${d.pais}: ${d.valor_en_porcentaje.toFixed(2)}%</p>`;
+            return divTool
+          })
+          .map((d) => {
+            return divTool
+          })
+          let soloPais = new Set(hoverCountries)
+          let arrPais = Array.from(soloPais)
+          divTool += `</div>`;
+          return arrPais
+      }
+
+      return text
+    })
+
 
     return am5.Bullet.new(root, {
       sprite: circle,

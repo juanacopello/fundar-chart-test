@@ -33,6 +33,12 @@ body {
     cursor: pointer;
 }
 
+.tooltip-bg{
+    background-color: white;
+    border: 1px solid black;
+    /* padding: 5px 0; */
+    text-align: left;
+}
 
 .tooltip-year{
     font-size: 16px;
