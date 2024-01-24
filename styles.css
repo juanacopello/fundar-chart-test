@@ -40,25 +40,38 @@ body {
     text-align: left;
 }
 
-.tooltip-year{
+/* .tooltip-year{
     font-size: 16px;
     font-family: "Chivo Mono";
     text-align: center;
     margin: auto;
+} */
+
+ .tooltip-year{
+    width: 100%;
+    font-family: "Chivo Mono";
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.2;
+    text-align: center;
+    margin: 5px auto 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
 }
 
 .pais-detalle{
-    font-family: 'Chivo';
-    font-size: 16px;
-    vertical-align: middle;
+    font-family: "Chivo Mono";
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.5;
+    margin: 5px auto;
+    padding: 0 10px;
 }
 
-
-
 .punto-tooltip{
-    font-size: 25px;
-    vertical-align: middle;
-    margin: auto;
+    font-size: 15px;
+    margin: auto 10px;
+    margin-left: 2px;
 }
 
 #cerrar-ventana:hover, .btn-eliminar:hover{

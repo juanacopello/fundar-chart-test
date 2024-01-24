@@ -191,7 +191,7 @@ const createChart = (divId) => {
     numericFields: ["valor_en_porcentaje"],
     dateFormat: "yyyy",
     dateFields: ["anio"],
-    colorFields: ["color_pais"]
+    colorFields: ["color_pais"],
   });
 
   chart = root.container.children.push(
@@ -199,7 +199,7 @@ const createChart = (divId) => {
       panX: false,
       panY: false,
       padding: 20,
-      paddingRight:50,
+      paddingRight: 50,
     })
   );
 
@@ -207,10 +207,9 @@ const createChart = (divId) => {
   cursor = chart.set(
     "cursor",
     am5xy.XYCursor.new(root, {
-      behavior: "zoomX"
+      behavior: "zoomX",
     })
   );
-
 
   cursor.lineX.setAll({
     stroke: am5.color("#4D4D4D"),
@@ -220,8 +219,7 @@ const createChart = (divId) => {
 
   cursor.lineY.set("visible", false); //Pongo invisible la linea Y
 
- colors = chart.get("colors"); //colores para grafico
-
+  colors = chart.get("colors"); //colores para grafico
 
   //Creación de eje X
   xAxis = chart.xAxes.push(
@@ -229,8 +227,9 @@ const createChart = (divId) => {
       baseInterval: { timeUnit: "year", count: 1 },
       min: new Date(1965, 1, 1).getTime(),
       max: new Date(2022, 1, 1).getTime(),
-      minPosition: 0.1,
-      maxPosition: 0.8, 
+      // extraMax: 0.05,
+      startLocation: 0,
+      endLocation: 0.8,
       renderer: am5xy.AxisRendererX.new(root, {}),
     })
   );
@@ -283,7 +282,7 @@ const createChart = (divId) => {
       am5.color("#720034"),
       am5.color("#608584"),
       am5.color("#C43E3E"),
-      am5.color("#CCE3F1")
+      am5.color("#CCE3F1"),
     ]);
 
   //Creación del eje y
@@ -355,33 +354,45 @@ const createLineSeries = (pais) => {
       yAxis: yAxis,
       valueYField: "valor_en_porcentaje",
       valueXField: "anio",
+      locationX: 0.5,
+      setStateOnChildren: true,
       tooltip: am5.Tooltip.new(root, {
-            getFillFromSprite: false,
-            getStrokeFromSprite: false,
-            autoTextColor: false,
-            getLabelFillFromSprite: false,
-            forceHidden: true,
-        }),
+        getFillFromSprite: false,
+        getStrokeFromSprite: false,
+        autoTextColor: false,
+        getLabelFillFromSprite: false,
+        forceHidden: true,
+      }),
     })
   );
 
-
   series.strokes.template.setAll({
-    strokeWidth: 3,
+    strokeWidth: 2,
   });
+
   series.data.setAll(dataPais);
 
+ 
 
+  let circle;
   //Bullets en hover
   series.bullets.push(() => {
-    let circle = am5.Circle.new(root, {
+    // console.log(series.get("stroke"))
+    circle = am5.Circle.new(root, {
+      // radius: 6,
+      // opacity: 0,
+      // toggleKey: "active",
+      // pointerOrientation: "horizontal",
+      // interactive: true,
+      // fill: "red"
       strokeWidth: 0,
-      radius: 8,
+      radius: 6,
       opacity: 0,
       toggleKey: "active",
       pointerOrientation: "horizontal",
       interactive: true,
-      fill: "red"
+      fill: "#ffffff",
+      keepTargetHover: true,
     });
 
     circle.states.create("default", {
@@ -394,56 +405,90 @@ const createLineSeries = (pais) => {
 
     circle.adapters.add("tooltipHTML", (text, target) => {
       if (target.dataItem) {
-        const dataItem = target.dataItem.dataContext
+        const dataItem = target.dataItem.dataContext;
         let divTool = `<div class="tooltip-bg"><p class="tooltip-year">${dataItem.anio_txt}</p>`;
 
         const hoverCountries = parsedData
-          .filter((d) => d.anio_txt === dataItem.anio_txt && selectedCountries.includes(d.iso3))
+          .filter(
+            (d) =>
+              d.anio_txt === dataItem.anio_txt &&
+              selectedCountries.includes(d.iso3)
+          )
           .map((d) => {
-            divTool += `<p class="pais-detalle"><span style='color:${d.color_pais};' class='punto-tooltip'>&#9679</span>${d.pais}: ${d.valor_en_porcentaje.toFixed(2)}%</p>`;
-            return divTool
+            divTool += `<p class="pais-detalle"><span style='color:${
+              d.color_pais
+            };' class='punto-tooltip'>&#9679</span>${
+              d.pais
+            }: ${d.valor_en_porcentaje.toFixed(2)}%</p>`;
+            return divTool;
           })
           .map((d) => {
-            return divTool
-          })
-          let soloPais = new Set(hoverCountries)
-          let arrPais = Array.from(soloPais)
-          divTool += `</div>`;
-          return arrPais
+            return divTool;
+          });
+        let soloPais = new Set(hoverCountries);
+        let arrPais = Array.from(soloPais);
+        divTool += `</div>`;
+        return arrPais;
       }
 
-      return text
-    })
-
+      return text;
+    });
 
     return am5.Bullet.new(root, {
       sprite: circle,
     });
   });
 
-  /*Funcion que buscaba poner el nombre del pais al final del gráfico<
+  let previousBulletSprites = [];
+function cursorMoved() {
+  for (var i = 0; i < previousBulletSprites.length; i++) {
+    console.log("prev bullets", previousBulletSprites)
+    previousBulletSprites[i].unhover();
+  }
+  previousBulletSprites = [];
 
-  series.bullets.push(function(root, series, dataItem) {
+  chart.series.each((series, target) => {
+    let bullets = series.bullets
+    console.log("bullet", bullets)
+    var dataItem = series.get("tooltip");
+    console.log("data item", dataItem);
+    if (dataItem) {
+      var bulletSprite = dataItem.bullets[0].get("sprite");
+      bulletSprite.hover();
+      previousBulletSprites.push(bulletSprite);
+    }
+  });
+}
 
-    var lastIndex = series.dataItems.length - 1;
+// cursor.events.on("cursormoved", cursorMoved);
 
+
+  /*Funcion que buscaba poner el nombre del pais al final del gráfico*/
+
+  series.bullets.push((root, series, dataItem) => {
+    let lastIndex = 0;
     if (series.dataItems.indexOf(dataItem) == lastIndex) {
       return am5.Bullet.new(root, {
-        opacity: 1,
+        // opacity: 1,
         sprite: am5.Label.new(root, {
-          text: dataItem.dataContext.pais,
+          fontFamily: 'Chivo Mono',
+          fontWeight: 500,
+          fontSize: 15,
           fill: series.get("fill"),
+          textAlign: 'right',
+          text: dataItem.dataContext.pais
         })
       });
     }
-  
-  });
+    });
   
   return series;
 };
-*/
 
-}
+
+
+
+
 createChart("chart-cont");
 fetchData();
 
@@ -452,4 +497,3 @@ const updateData = () => {
   createChart("chart-cont");
   fetchData();
 };
-
